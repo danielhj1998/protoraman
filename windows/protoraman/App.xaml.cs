@@ -28,6 +28,7 @@ namespace protoraman
             Microsoft.ReactNative.Managed.AutolinkedNativeModules.RegisterAutolinkedNativeModulePackages(PackageProviders); // Includes any autolinked modules
 
             PackageProviders.Add(new ReactPackageProvider());
+            PackageProviders.Add(new Microsoft.ReactNative.Managed.ReactPackageProvider());
 
             InitializeComponent();
         }

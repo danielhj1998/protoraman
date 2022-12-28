@@ -2490,6 +2490,17 @@
     "@types/babel__core" "^7.0.0"
     "@types/babel__traverse" "^7.0.6"
 
+"babel-plugin-module-resolver@^4.1.0":
+  "integrity" "sha512-MlX10UDheRr3lb3P0WcaIdtCSRlxdQsB1sBqL7W0raF070bGl1HQQq5K3T2vf2XAYie+ww+5AKC/WrkjRO2knA=="
+  "resolved" "https://registry.npmjs.org/babel-plugin-module-resolver/-/babel-plugin-module-resolver-4.1.0.tgz"
+  "version" "4.1.0"
+  dependencies:
+    "find-babel-config" "^1.2.0"
+    "glob" "^7.1.6"
+    "pkg-up" "^3.1.0"
+    "reselect" "^4.0.0"
+    "resolve" "^1.13.1"
+
 "babel-plugin-polyfill-corejs2@^0.3.3":
   "integrity" "sha512-8hOdmFYFSZhqg2C/JgLUQ+t52o5nirNwaWM2B9LWteozwIvM14VSwdsCAUET10qT+kmySAlseadmfeeSWFCy+Q=="
   "resolved" "https://registry.npmjs.org/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.3.3.tgz"
@@ -3818,6 +3829,14 @@
     "parseurl" "~1.3.3"
     "statuses" "~1.5.0"
     "unpipe" "~1.0.0"
+
+"find-babel-config@^1.2.0":
+  "integrity" "sha512-jB2CHJeqy6a820ssiqwrKMeyC6nNdmrcgkKWJWmpoxpE8RKciYJXCcXRq1h2AzCo5I5BJeN2tkGEO3hLTuePRA=="
+  "resolved" "https://registry.npmjs.org/find-babel-config/-/find-babel-config-1.2.0.tgz"
+  "version" "1.2.0"
+  dependencies:
+    "json5" "^0.5.1"
+    "path-exists" "^3.0.0"
 
 "find-cache-dir@^2.0.0":
   "integrity" "sha512-Tq6PixE0w/VMFfCgbONnkiQIVol/JJL7nRMi20fqzA4NRs9AfeqMGeRdPi3wIhYkxjeBaWh2rxwapn5Tu3IqOQ=="
@@ -5221,6 +5240,11 @@
   "resolved" "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
   "version" "1.0.1"
 
+"json5@^0.5.1":
+  "integrity" "sha512-4xrs1aW+6N5DalkqSVA8fxh458CXvR99WU8WLKmq4v8eWAL86Xo3BVqyd3SkA9wEVjCMqyvvRRkshAdOnBp5rw=="
+  "resolved" "https://registry.npmjs.org/json5/-/json5-0.5.1.tgz"
+  "version" "0.5.1"
+
 "json5@^2.2.1":
   "integrity" "sha512-46Tk9JiOL2z7ytNQWFLpj99RZkVgeHf87yGQKsIkaPz1qSH9UczKH1rO7K3wgRselo0tYMUNfecYpm/p1vC7tQ=="
   "resolved" "https://registry.npmjs.org/json5/-/json5-2.2.2.tgz"
@@ -6539,6 +6563,13 @@
   dependencies:
     "find-up" "^4.0.0"
 
+"pkg-up@^3.1.0":
+  "integrity" "sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA=="
+  "resolved" "https://registry.npmjs.org/pkg-up/-/pkg-up-3.1.0.tgz"
+  "version" "3.1.0"
+  dependencies:
+    "find-up" "^3.0.0"
+
 "posix-character-classes@^0.1.0":
   "integrity" "sha512-xTgYBc3fuo7Yt7JbiuFxSYGToMoz8fLoE6TC9Wx1P/u+LfeThMOAqmuyECnlBaaJb+u1m9hHiXUEtwW4OzfUJg=="
   "resolved" "https://registry.npmjs.org/posix-character-classes/-/posix-character-classes-0.1.1.tgz"
@@ -7030,6 +7061,11 @@
   "resolved" "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz"
   "version" "1.0.0"
 
+"reselect@^4.0.0":
+  "integrity" "sha512-Zu1xbUt3/OPwsXL46hvOOoQrap2azE7ZQbokq61BQfiXvhewsKDwhMeZjTX9sX0nvw1t/U5Audyn1I9P/m9z0A=="
+  "resolved" "https://registry.npmjs.org/reselect/-/reselect-4.1.7.tgz"
+  "version" "4.1.7"
+
 "resolve-cwd@^3.0.0":
   "integrity" "sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg=="
   "resolved" "https://registry.npmjs.org/resolve-cwd/-/resolve-cwd-3.0.0.tgz"
@@ -7057,7 +7093,7 @@
   "resolved" "https://registry.npmjs.org/resolve-url/-/resolve-url-0.2.1.tgz"
   "version" "0.2.1"
 
-"resolve@^1.1.6", "resolve@^1.10.0", "resolve@^1.12.0", "resolve@^1.14.2", "resolve@^1.18.1":
+"resolve@^1.1.6", "resolve@^1.10.0", "resolve@^1.12.0", "resolve@^1.13.1", "resolve@^1.14.2", "resolve@^1.18.1":
   "integrity" "sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw=="
   "resolved" "https://registry.npmjs.org/resolve/-/resolve-1.22.1.tgz"
   "version" "1.22.1"

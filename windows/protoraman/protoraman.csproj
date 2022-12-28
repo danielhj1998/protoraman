@@ -148,6 +148,9 @@
       <Version>6.2.9</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Inter.ttf" />
+  </ItemGroup>
   <ImportGroup Label="ReactNativeWindowsTargets">
     <Import Project="$(ReactNativeWindowsDir)\PropertySheets\External\Microsoft.ReactNative.Uwp.CSharpApp.targets" Condition="Exists('$(ReactNativeWindowsDir)\PropertySheets\External\Microsoft.ReactNative.Uwp.CSharpApp.targets')" />
   </ImportGroup>

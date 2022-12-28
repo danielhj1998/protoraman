@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Microsoft.ReactNative.Managed;
+using Windows.Devices.SerialCommunication;
 
 namespace protoraman
 {
@@ -12,10 +13,11 @@ namespace protoraman
     class SerialPort
     {
         [ReactMethod("getDevices")]
-        public async Task<JSValueObject> GetDevices()
+        public async Task<JSValueObject> GetDevices(string deviceSelector)
         {
             TaskCompletionSource<JSValueObject> tcs = new TaskCompletionSource<JSValueObject>();
 
+            var selector = SerialDevice.GetDeviceSelector(deviceSelector);
             var devices = await DeviceInformation.FindAllAsync();
             if (devices.Any()) //if the device is found
             {

@@ -3,24 +3,39 @@ import {View, StyleSheet, Text, Image, useColorScheme} from 'react-native';
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import image from '@assets/images/imago.png';
-import {getDevices} from '@app/modules/SerialPort';
+import SerialPort from '@app/modules/NativeSerialPort';
+import { NativeEventEmitter } from 'react-native';
+
+const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
 const SplashScreen = ({navigation}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
+  let eventSubscriptions = [];
+
+  const onDeviceConnected = () => {
+    eventSubscriptions.forEach(s => s.remove());
+    navigation.navigate("Main");
+  }
+
+  const onInitialDeviceNotPlugged = () => {
+    eventSubscriptions.forEach(s => s.remove());
+    navigation.navigate("Connection");
+  }
+
+  const onConnectionFailed = (stat) => {
+    console.log(stat);
+  }
 
   useEffect(() => {
-    const isDeviceConnected = async () => {
-      const devices = await getDevices('COM7');
-      console.log(devices);
-      if (devices){
-        navigation.navigate('Main');
-      } else {
-        navigation.navigate('Connection');
-      }
+    const setListeners = async () => {
+      SerialPort.createWatcher();
+      eventSubscriptions.push(SerialPortEmitter.addListener('onDeviceConnected', onDeviceConnected));
+      eventSubscriptions.push(SerialPortEmitter.addListener('onInitialDeviceNotPlugged', onInitialDeviceNotPlugged));
+      eventSubscriptions.push(SerialPortEmitter.addListener('onConnectionFailed', onConnectionFailed));
     };
 
-    isDeviceConnected();
+    setTimeout(() => setListeners(), 2000);
   },[]);
 
   return (
@@ -36,7 +51,7 @@ const SplashScreen = ({navigation}) => {
   );
 };
 
-const dynamicStyles = (colors) =>{
+const dynamicStyles = (colors) => {
   return StyleSheet.create({
     container: {
       backgroundColor: colors.background,

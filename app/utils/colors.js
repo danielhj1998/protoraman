@@ -11,8 +11,10 @@ const darkColorScheme = {
   body: "#E5E5E5",
   green: "#8EBF40",
   orange: "#D6725C",
+  yellow: "#D6AE5B",
   gray: "#999999",
   placeholder: "#60606C",
+  red: '#BA3E3E',
 }
 
 const lightColorScheme = {
@@ -20,6 +22,8 @@ const lightColorScheme = {
   body: "#34343A",
   green: "#568708",
   orange: "#B1523D",
+  yellow: "#B18E3D",
   gray: "#828282",
   placeholder: "#E6E6E6",
+  red: '#870808',
 }

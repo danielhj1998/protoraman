@@ -15,6 +15,7 @@ const Router = () => {
         screenOptions={{
           headerShown: false,
         }}
+        initialRouteName="Main"
       >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Connection" component={ConnectionScreen} />

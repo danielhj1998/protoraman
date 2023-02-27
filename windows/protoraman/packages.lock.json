@@ -20,6 +20,12 @@
         "resolved": "2.7.0",
         "contentHash": "dB4im13tfmMgL/V3Ei+3kD2rUF+/lTxAmR4gjJ45l577eljHfdo/KUrxpq/3I1Vp6e5GCDG1evDaEGuDxypLMg=="
       },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
+      },
       "Microsoft.Net.Native.Compiler": {
         "type": "Transitive",
         "resolved": "2.2.7-rel-27913-00",
@@ -133,6 +139,9 @@
       },
       "rnscreens": {
         "type": "Project"
+      },
+      "rnsvg": {
+        "type": "Project"
       }
     },
     "UAP,Version=v10.0.16299/win10-arm": {
@@ -148,6 +157,12 @@
           "NETStandard.Library": "2.0.3",
           "runtime.win10-arm.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
+      },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
       },
       "runtime.win10-arm.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
@@ -169,6 +184,12 @@
           "runtime.win10-arm-aot.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
       },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
+      },
       "runtime.win10-arm-aot.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
         "resolved": "6.2.9",
@@ -188,6 +209,12 @@
           "NETStandard.Library": "2.0.3",
           "runtime.win10-arm64-aot.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
+      },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
       },
       "runtime.win10-arm64-aot.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
@@ -209,6 +236,12 @@
           "runtime.win10-x64.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
       },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
+      },
       "runtime.win10-x64.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
         "resolved": "6.2.9",
@@ -228,6 +261,12 @@
           "NETStandard.Library": "2.0.3",
           "runtime.win10-x64-aot.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
+      },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
       },
       "runtime.win10-x64-aot.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
@@ -249,6 +288,12 @@
           "runtime.win10-x86.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
       },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
+      },
       "runtime.win10-x86.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",
         "resolved": "6.2.9",
@@ -268,6 +313,12 @@
           "NETStandard.Library": "2.0.3",
           "runtime.win10-x86-aot.Microsoft.NETCore.UniversalWindowsPlatform": "6.2.9"
         }
+      },
+      "Win2D.uwp": {
+        "type": "Direct",
+        "requested": "[1.26.0, )",
+        "resolved": "1.26.0",
+        "contentHash": "smA/NJWM3ruhWeKPHmCyW8PX8w1ckD9SN7qWEOePe/iuFKvLyC8govCHq/F40hQCRs8zBqHWaWBpekTnQuXx6w=="
       },
       "runtime.win10-x86-aot.Microsoft.NETCore.UniversalWindowsPlatform": {
         "type": "Transitive",

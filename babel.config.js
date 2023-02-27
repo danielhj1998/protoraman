@@ -5,9 +5,13 @@ const ModuleResolverPlugin = ['module-resolver', {
     },
 }];
 
+const InlineImportPlugin = ['babel-plugin-inline-import', {
+    extensions: [".svg"],
+}];
+
 module.exports = {
     presets: ['module:metro-react-native-babel-preset'],
-    plugins: [ModuleResolverPlugin],
+    plugins: [ModuleResolverPlugin, InlineImportPlugin],
     overrides: [
         {
             test: /\.ts?$/,

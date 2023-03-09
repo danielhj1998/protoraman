@@ -15,6 +15,8 @@ const darkColorScheme = {
   gray: "#999999",
   placeholder: "#60606C",
   red: '#BA3E3E',
+  cyan: '#40B6BF',
+  blue: '#4084BF',
 }
 
 const lightColorScheme = {
@@ -26,4 +28,6 @@ const lightColorScheme = {
   gray: "#828282",
   placeholder: "#E6E6E6",
   red: '#870808',
+  cyan: '#088587',
+  blue: '#085C87',
 }

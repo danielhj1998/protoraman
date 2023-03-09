@@ -30,6 +30,8 @@ namespace protoraman
             PackageProviders.Add(new ReactPackageProvider());
             PackageProviders.Add(new Microsoft.ReactNative.Managed.ReactPackageProvider());
 
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTI0MzMzNEAzMjMwMmUzNDJlMzBQeFJCcUFNbGxIOUNTZmVvQVpkeGViTUxGS01MQnFSU1JpZ3lkTjJwdnZNPQ==");
+
             InitializeComponent();
         }
 

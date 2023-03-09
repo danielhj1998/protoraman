@@ -3,10 +3,9 @@ import {View, Text, TouchableOpacity, StyleSheet, useColorScheme} from 'react-na
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
-import ToggleButton from '@app/components/ToggleButton';
 import NumberInput from '@app/components/NumberInput';
 
-const SpectrumSettingsPanel = () => {
+const RangeSetting = ({range, onChangeRange}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
 
@@ -14,7 +13,12 @@ const SpectrumSettingsPanel = () => {
     <View>
       <View style={styles.titleContainer}>
         <Text style={styles.body}>Rango</Text>
-        <Icon name="ray-start-end" color={colors.gray} size={25} style={styles.titleIcon} />
+        <Icon
+          name="ray-start-end"
+          color={colors.gray}
+          size={25}
+          style={styles.titleIcon}
+        />
       </View>
       <View style={styles.optionContainer}>
         <TouchableOpacity style={styles.buttonIcon}>
@@ -22,10 +26,43 @@ const SpectrumSettingsPanel = () => {
         </TouchableOpacity>
         <View style={styles.horizontalContainer}>
           <TouchableOpacity style={styles.buttonIcon}>
-            <Icon name="arrow-expand-horizontal" color={colors.body} size={25} />
+            <Icon
+              name="arrow-expand-horizontal"
+              color={colors.body}
+              size={25}
+            />
           </TouchableOpacity>
           <Text style={[styles.body, styles.leftMargin]}>:</Text>
-          <NumberInput style={styles.leftMargin}/>
+          <NumberInput
+            style={styles.leftMargin}
+            value={range.x[0]}
+            onChange={v => onChangeRange({...range, x: [v, range.x[1]]})}
+          />
+          <Text style={[styles.body, styles.leftMargin]}>a</Text>
+          <NumberInput
+            style={styles.leftMargin}
+            value={range.x[1]}
+            onChange={v => onChangeRange({...range, x: [range.x[0], v]})}
+          />
+          <Text style={[styles.body, styles.leftMargin]}>cm</Text>
+          <Text style={[styles.body, styles.superscript]}>-1</Text>
+        </View>
+        <View style={styles.horizontalContainer}>
+          <TouchableOpacity style={styles.buttonIcon}>
+            <Icon name="arrow-expand-vertical" color={colors.body} size={25} />
+          </TouchableOpacity>
+          <Text style={[styles.body, styles.leftMargin]}>:</Text>
+          <NumberInput
+            style={styles.leftMargin}
+            value={range.y[0]}
+            onChange={v => onChangeRange({...range, y: [v, range.y[0]]})}
+          />
+          <Text style={[styles.body, styles.leftMargin]}>a</Text>
+          <NumberInput
+            style={styles.leftMargin}
+            value={range.y[1]}
+            onChange={v => onChangeRange({...range, y: [range.y[0], v]})}
+          />
         </View>
       </View>
     </View>
@@ -63,7 +100,11 @@ const dynamicStyles = (colors) =>{
     leftMargin: {
       marginLeft: 5,
     },
+    superscript: {
+      fontSize: 10,
+      marginBottom: 8,
+    },
   });
 }
 
-export default SpectrumSettingsPanel;
+export default RangeSetting;

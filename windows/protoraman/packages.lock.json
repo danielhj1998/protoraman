@@ -20,6 +20,23 @@
         "resolved": "2.7.0",
         "contentHash": "dB4im13tfmMgL/V3Ei+3kD2rUF+/lTxAmR4gjJ45l577eljHfdo/KUrxpq/3I1Vp6e5GCDG1evDaEGuDxypLMg=="
       },
+      "Syncfusion.Licensing": {
+        "type": "Direct",
+        "requested": "[20.4.0.52, )",
+        "resolved": "20.4.0.52",
+        "contentHash": "jhl7OcPoSpRZS2uWwXJouf1kpY1Mc1WzznySOVvMek3+U1RT46StHf7E3K339x6PlLiCEX+kzBSfPIORFte8cw=="
+      },
+      "Syncfusion.Xamarin.SfChart": {
+        "type": "Direct",
+        "requested": "[20.4.0.52, )",
+        "resolved": "20.4.0.52",
+        "contentHash": "m+koZ97kx8YlJs2KsaLxw8fyZDtvcyezJte7UuLd0lrMU760k57796sui1iUum7/MLyZwJuQK8yZRa9Plh0vyg==",
+        "dependencies": {
+          "Syncfusion.SfChart.UWP": "20.4.0.52",
+          "Syncfusion.Xamarin.Core": "20.4.0.52",
+          "Xamarin.Forms": "5.0.0.2012"
+        }
+      },
       "Win2D.uwp": {
         "type": "Direct",
         "requested": "[1.26.0, )",
@@ -126,6 +143,32 @@
         "type": "Transitive",
         "resolved": "2.2.9",
         "contentHash": "qF6RRZKaflI+LR1YODNyWYjq5YoX8IJ2wx5y8O+AW2xO+1t/Q6Mm+jQ38zJbWnmXbrcOqUYofn7Y3/KC6lTLBQ=="
+      },
+      "Syncfusion.SfChart.UWP": {
+        "type": "Transitive",
+        "resolved": "20.4.0.52",
+        "contentHash": "1PILYNkaBdUDoJTIT7O8XPep/WmVeNW/SYsXJ9DDAgeZB4qZuLV4uwk0jXus4eQfCK/Ie2RvtMJ5oDrwnmESEQ==",
+        "dependencies": {
+          "Syncfusion.Licensing": "20.4.0.52"
+        }
+      },
+      "Syncfusion.Xamarin.Core": {
+        "type": "Transitive",
+        "resolved": "20.4.0.52",
+        "contentHash": "5Z+4hL3c+tLP6lK4l0PJp0sHEU29vrNhOhx8EpZTMeCR/TKQIOcXxDfdHSveZ/EHefdSj5KAmXHGNloXdT0+Gg==",
+        "dependencies": {
+          "Syncfusion.Licensing": "20.4.0.52",
+          "Xamarin.Forms": "5.0.0.2012"
+        }
+      },
+      "Xamarin.Forms": {
+        "type": "Transitive",
+        "resolved": "5.0.0.2012",
+        "contentHash": "Rqc6xvWR/sf+Db5+qRCFmuYTWVp04QWRfwPto2/JHbShSy4Ed53Q2jpoFzsoloXkJA6saD236PlaWAhT6vI4gw==",
+        "dependencies": {
+          "Microsoft.UI.Xaml": "2.4.3",
+          "Win2D.uwp": "1.20.0"
+        }
       },
       "microsoft.reactnative": {
         "type": "Project"

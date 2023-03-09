@@ -4,7 +4,7 @@ import {getColors} from '@app/utils/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import fonts from '@app/utils/fonts';
 
-const ToggleButton = ({enabled, onPress}) => {
+const ToggleButton = ({enabled, onChangeEnabled}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
 
@@ -12,7 +12,7 @@ const ToggleButton = ({enabled, onPress}) => {
   const position = enabled ? {bottom: 17, left: 20} : {bottom: 17};
 
   return (
-    <TouchableOpacity onPress={onPress} >
+    <TouchableOpacity onPress={() => onChangeEnabled(!enabled)} >
       <View style={styles.slider} />
       <View style={[styles.circle, {backgroundColor: handleColor, ...position}]} />
     </TouchableOpacity>

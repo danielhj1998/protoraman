@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, useColorScheme, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
@@ -9,17 +9,19 @@ import ProcessControlPanel from '@app/screens/MainScreen/ProcessControlPanel';
 import StatusPanel from '@app/screens/MainScreen/StatusPanel';
 import SpectrumPanel from '@app/screens/MainScreen/SpectrumPanel';
 import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel';
+import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 
 const MainScreen = () => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
+  const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
 
   return (
     <View style={styles.container}>
       <View style={styles.topPanelContainer}>
         <ProcessControlPanel />
         <View style={styles.statusIconsContainer}>
-          <StatusPanel isConnected={true}  processState="inactivo" />
+          <StatusPanel isConnected={true} processState="inactivo" />
           <TouchableOpacity>
             <Icon name="information" color={colors.gray} size={40} />
           </TouchableOpacity>
@@ -32,8 +34,18 @@ const MainScreen = () => {
         </View>
       </View>
       <View style={styles.spectrumPanel}>
-        <SpectrumPanel />
-        <SpectrumSettingsPanel />
+        <SpectrumPanel
+          range={spectrumSettings.viewRange}
+          intervals={spectrumSettings.tickStep}
+          gridEnabled={spectrumSettings.gridEnabled}
+          gridTicks={spectrumSettings.gridTicks}
+          spectrumColor={spectrumSettings.spectrumColor}
+          graphColor={spectrumSettings.graphColor}
+        />
+        <SpectrumSettingsPanel
+          settings={spectrumSettings}
+          onChangeSettings={setSpectrumSettings}
+        />
       </View>
     </View>
   );

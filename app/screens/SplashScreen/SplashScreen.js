@@ -4,6 +4,7 @@ import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import image from '@assets/images/imago.png';
 import SerialPort from '@app/modules/NativeSerialPort';
+import {protoRamanDeviceIdentify} from '@app/helpers/deviceRequests';
 import { NativeEventEmitter } from 'react-native';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
@@ -14,8 +15,16 @@ const SplashScreen = ({navigation}) => {
   let eventSubscriptions = [];
 
   const onDeviceConnected = () => {
-    eventSubscriptions.forEach(s => s.remove());
-    navigation.navigate("Main");
+    setTimeout(() => {
+      protoRamanDeviceIdentify(SerialPort).then(correct => {
+        if(correct){
+          eventSubscriptions.forEach(s => s.remove());
+          navigation.navigate('Main');
+        } else {
+          Serial.deviceDispose();
+        }
+      });
+    }, 2000);
   }
 
   const onInitialDeviceNotPlugged = () => {

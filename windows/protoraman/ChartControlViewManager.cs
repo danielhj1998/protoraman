@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 using Syncfusion.UI.Xaml.Charts;
 using Windows.UI;
 using System.Diagnostics;
@@ -34,7 +34,14 @@ namespace protoraman
                         fls.ItemsSource = viewModel.Data;
                         fls.XBindingPath = "X";
                         fls.YBindingPath = "Y";
-                        view.Series.Add(fls);
+
+                        if (sObject.ContainsKey("color"))
+                        {
+                            Color color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), sObject["color"].AsString());
+                            fls.Interior = new SolidColorBrush(color);
+                        }
+
+                        view.Series = new ChartSeriesCollection() { fls };
                     }
                 }
             }
@@ -227,18 +234,25 @@ namespace protoraman
             yAxis.SmallTicksPerInterval = number;
         }
 
-        //[ViewManagerProperty("gridStyle")]
-        //public void SetGridLinesStyle(ChartControl view, IDictionary<string, JSValue> style)
-        //{
+        [ViewManagerProperty("gridStyle")]
+        public void SetGridLinesStyle(ChartControl view, IDictionary<string, JSValue> style)
+        {
+            NumericalAxis xAxis = (NumericalAxis)view.PrimaryAxis;
+            xAxis.SmallTicksPerInterval = 2;
+            Style s = new Style(typeof(Line));
+            if (style.ContainsKey("color"))
+            {
+                Color color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), style["color"].AsString());
+                s.Setters.Add(new Setter(Line.StrokeProperty, new SolidColorBrush(color)));
+            }
+            if (style.ContainsKey("strokeWidth"))
+                s.Setters.Add(new Setter(Line.StrokeThicknessProperty, style["strokeWidth"].AsDouble()));
 
-        //    NumericalAxis xAxis = (NumericalAxis)view.PrimaryAxis;
-        //    xAxis.SmallTicksPerInterval = 2;
-        //    Style s = new Style(typeof(LineStyle));
-        //    Color color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), style["color"].AsString());
-        //    s.Setters.Add(new Setter(LineStyle.StrokeProperty, new SolidColorBrush(color)));
-        //    s.Setters.Add(new Setter(LineStyle.StrokeThicknessProperty, style["strokeWidth"].AsDouble()));
-        //    view.PrimaryAxis.MajorGridLineStyle = s;
-        //}
+            view.PrimaryAxis.MajorGridLineStyle = s;
+            view.PrimaryAxis.MinorGridLineStyle = s;
+            view.SecondaryAxis.MajorGridLineStyle = s;
+            view.SecondaryAxis.MinorGridLineStyle = s;
+        }
 
         [ViewManagerProperty("xHeader")]
         public void SetXHeader(ChartControl view, string header)

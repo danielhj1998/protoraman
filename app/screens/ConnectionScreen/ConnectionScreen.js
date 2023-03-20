@@ -6,6 +6,7 @@ import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import FadingView from '@app/components/FadingView';
 import SerialPort from '@app/modules/NativeSerialPort';
+import {protoRamanDeviceIdentify} from '@app/helpers/deviceRequests';
 import { NativeEventEmitter } from 'react-native';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
@@ -25,11 +26,19 @@ const ConnectionScreen = ({navigation}) => {
   }
 
   const onDeviceConnected = () => {
-    setScript('Conectado');
-    setIconName('check-circle');
-    setIconColor(colors.green);
-    eventSubscriptions.forEach(s => s.remove());
-    setTimeout(() => navigation.navigate("Main"), 1000);
+    setTimeout(() => {
+      protoRamanDeviceIdentify(SerialPort).then(correct => {
+        if(correct){
+          setScript('Conectado');
+          setIconName('check-circle');
+          setIconColor(colors.green);
+          eventSubscriptions.forEach(s => s.remove());
+          setTimeout(() => navigation.navigate('Main'), 2000);
+        } else {
+          Serial.deviceDispose();
+        }
+      });
+    }, 1000);
   }
 
   const onConnectionFailed = (stat) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from '@app/screens/SplashScreen/SplashScreen';
@@ -15,7 +15,7 @@ const Router = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Main"
+        initialRouteName="Splash"
       >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Connection" component={ConnectionScreen} />

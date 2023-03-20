@@ -12,7 +12,7 @@ import TakeSampleButton from '@app/screens/MainScreen/TakeSampleButton';
 import NormalizationProcess from '@app/screens/MainScreen/NormalizationProcess';
 import FindPeaksProcess from '@app/screens/MainScreen/FindPeaksProcess';
 
-const ProcessControlPanel = () => {
+const ProcessControlPanel = ({onTakeSamplePress}) => {
   const colors = getColors(useColorScheme() === 'dark');
   const styles = dynamicStyles(colors);
   const [controlTabActive, setControlTabActive] = useState(true);
@@ -25,10 +25,6 @@ const ProcessControlPanel = () => {
     setExposureTime(exposure);
     setSpectrumReadings(readings);
     setReadingTime((exposure * readings) / 1000);
-  };
-
-  const handleTakeSample = () => {
-    console.log('Taking sample...');
   };
 
   const controlTabColor = controlTabActive ? colors.orange : colors.gray;
@@ -54,7 +50,7 @@ const ProcessControlPanel = () => {
         <SvgXml style={styles.icon} width="30" height="30" xml={svgImage} />
         <ReadingTimeDisplay readingTime={readingTime} />
         <View style={styles.separator} />
-        <TakeSampleButton onTakeSamplePress={handleTakeSample} />
+        <TakeSampleButton onTakeSamplePress={onTakeSamplePress} />
       </View>
     );
   };

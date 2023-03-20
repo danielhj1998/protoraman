@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Collections.Generic;
 using Windows.Storage.Streams;
 using Windows.Devices.Enumeration;
@@ -9,7 +10,8 @@ using Microsoft.ReactNative.Managed;
 using Windows.Devices.Usb;
 using Windows.Devices.SerialCommunication;
 using Windows.Foundation;
-using System.Diagnostics;
+using System.Text;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace protoraman
 {
@@ -30,7 +32,7 @@ namespace protoraman
         {
             TaskCompletionSource<JSValueObject> tcs = new TaskCompletionSource<JSValueObject>();
 
-            var selector = SerialDevice.GetDeviceSelector("COM8");
+            var selector = SerialDevice.GetDeviceSelector(AQS);
             var devices = await DeviceInformation.FindAllAsync(selector);
             if (devices.Any()) //if the device is found
             {
@@ -50,6 +52,10 @@ namespace protoraman
                     {
                         data["name"] = device.Properties["System.ItemNameDisplay"].ToString();
                     }
+                    if (device.Properties.ContainsKey("System.Devices.InterfaceEnabled"))
+                    {
+                        data["enabled"] = (bool)device.Properties["System.Devices.InterfaceEnabled"];
+                    }
                     jsdevices.Add(data);
                 }
 
@@ -68,9 +74,6 @@ namespace protoraman
         [ReactMethod("createWatcher")]
         public void CreateWatcher()
         {
-            Debug.WriteLine("onDeviceAdded");
-            TaskCompletionSource<JSValueObject> tcs = new TaskCompletionSource<JSValueObject>();
-
             var deviceWatcher = DeviceInformation.CreateWatcher(AQS);
 
             deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>
@@ -96,6 +99,7 @@ namespace protoraman
                     this.device = await SerialDevice.FromIdAsync(deviceInfo.Id);
                     if (this.device != null)
                     {
+                        SetDeviceConfiguration(this.device);
                         OnDeviceConnected?.Invoke();
                     }
 
@@ -119,19 +123,135 @@ namespace protoraman
 
         private void OnDeviceRemoved(DeviceWatcher watcher, DeviceInformationUpdate deviceInfo)
         {
-            this.device = null;
+            this.DeviceDispose();
             OndeviceDisconnected?.Invoke();
         }
 
-        private async void DeviceWrite()
+
+        [ReactMethod("deviceDispose")]
+        public void DeviceDispose()
         {
-            this.device.BaudRate = 9600;
-            this.device.DataBits = 8;
-            this.device.StopBits = SerialStopBitCount.One;
-            this.device.Parity = SerialParity.None;
-            DataWriter dataWriter = new DataWriter(this.device.OutputStream);
-            await dataWriter.StoreAsync();
-            dataWriter.WriteString("1");
+            this.device.Dispose();
+            this.device = null;
+        }
+
+        private void SetDeviceConfiguration(SerialDevice device)
+        {
+            device.BaudRate = 115200;
+            device.DataBits = 8;
+            device.StopBits = SerialStopBitCount.One;
+            device.Parity = SerialParity.None;
+            device.Handshake = SerialHandshake.None;
+            device.ReadTimeout = System.TimeSpan.FromMilliseconds(1000);
+        }
+
+        [ReactMethod("deviceWriteString")]
+        public async Task<bool> DeviceWriteString(string message)
+        {
+            var bytesToWrite = Encoding.ASCII.GetBytes(message).ToArray();
+            return await this.DeviceWrite(bytesToWrite);
+        }
+
+        [ReactMethod("deviceWriteUint16")]
+        public async Task<bool> DeviceWriteUInt16(UInt16 number)
+        {
+            return await this.DeviceWrite(BitConverter.GetBytes(number));
+        }
+
+        private async Task<bool> DeviceWrite(byte[] bytesToWrite)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            try
+            {
+                await this.device.OutputStream.WriteAsync(bytesToWrite.AsBuffer());
+                tcs.SetResult(true);
+            }
+            catch (Exception exception)
+            {
+                tcs.SetException(exception);
+            }
+            var result = await tcs.Task;
+            return result;
+        }
+
+        [ReactMethod("deviceReadUInt16")]
+        public async Task<UInt16> DeviceReadUInt16()
+        {
+            TaskCompletionSource<UInt16> tcs = new TaskCompletionSource<UInt16>();
+            try
+            {
+                var inputStream = this.device.InputStream;
+                var dataReader = new DataReader(inputStream)
+                {
+                    InputStreamOptions = InputStreamOptions.Partial,
+                    ByteOrder = ByteOrder.LittleEndian
+                };
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                var bytesRead = await dataReader.LoadAsync(sizeof(UInt16)).AsTask(cts.Token);
+                tcs.SetResult(dataReader.ReadUInt16());                
+                dataReader.Dispose();
+            }
+            catch (Exception exception)
+            {
+                tcs.SetException(exception);
+            }
+            var result = await tcs.Task;
+            return result;
+        }
+
+        [ReactMethod("deviceReadString")]
+        public async Task<string> DeviceReadString(uint stringLength)
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            try
+            {
+                var inputStream = this.device.InputStream;
+                var dataReader = new DataReader(inputStream)
+                {
+                    InputStreamOptions = InputStreamOptions.Partial,
+                    ByteOrder = ByteOrder.LittleEndian
+                };
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                var bytesRead = await dataReader.LoadAsync(stringLength).AsTask(cts.Token);
+                OnDataRead?.Invoke(bytesRead.ToString());
+                char[] chars = new char[stringLength];
+                for(int i=0; i<stringLength; i++)
+                {
+                    chars[i] = Convert.ToChar(dataReader.ReadByte());
+                }
+                tcs.SetResult(new string(chars));
+                dataReader.DetachStream();
+                dataReader.Dispose();
+
+                //var inputStream = this.device.InputStream;
+                //var dataReader = new DataReader(inputStream)
+                //{
+                //    InputStreamOptions = InputStreamOptions.Partial,
+                //    ByteOrder = ByteOrder.LittleEndian
+                //};
+                //CancellationTokenSource cts = new CancellationTokenSource();
+                //cts.CancelAfter(10000);
+                //var bytesRead = await dataReader.LoadAsync(sizeof(UInt16)).AsTask(cts.Token);
+                //var bufferLength = dataReader.ReadUInt16();
+                //bytesRead = await dataReader.LoadAsync(bufferLength).AsTask(cts.Token);
+
+                //var data = new JSValueArray();
+                //while (dataReader.UnconsumedBufferLength > 0)
+                //{
+                //    data.Add(dataReader.ReadSingle());
+                //}
+
+                //tcs.SetResult(data);
+                //dataReader.Dispose();
+            }
+            catch (Exception exception)
+            {
+                tcs.SetException(exception);                
+            }
+            var result = await tcs.Task;
+            return result;
         }
 
         #endregion
@@ -151,6 +271,9 @@ namespace protoraman
 
         [ReactEvent("onConnectionFailed")]
         public Action<string> OnConnectionFailed { get; set; }
+
+        [ReactEvent("onDataRead")]
+        public Action<string> OnDataRead { get; set; }
 
         #endregion
 

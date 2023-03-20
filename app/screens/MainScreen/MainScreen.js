@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, useColorScheme, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
@@ -10,16 +10,36 @@ import StatusPanel from '@app/screens/MainScreen/StatusPanel';
 import SpectrumPanel from '@app/screens/MainScreen/SpectrumPanel';
 import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel';
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
+import SerialPort from '@app/modules/NativeSerialPort.ts';
+import { NativeEventEmitter } from 'react-native';
+import {} from '@app/helpers/deviceRequests';
+
+const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
 const MainScreen = () => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
+  let eventSubscriptions = [];
+
+  const handleTakeSample = async () => {
+    SerialPort.deviceWriteString('n');
+    //const res = await SerialPort.deviceReadString();
+    //console.log(res);
+  };
+
+  const onDataRead = (s) => {
+    console.log(s);
+  }
+
+  useEffect(() => {
+    eventSubscriptions.push(SerialPortEmitter.addListener('onDataRead', onDataRead));
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.topPanelContainer}>
-        <ProcessControlPanel />
+        <ProcessControlPanel onTakeSamplePress={handleTakeSample} />
         <View style={styles.statusIconsContainer}>
           <StatusPanel isConnected={true} processState="inactivo" />
           <TouchableOpacity>

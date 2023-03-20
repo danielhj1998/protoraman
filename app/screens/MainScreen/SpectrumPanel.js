@@ -14,6 +14,10 @@ const SpectrumPanel = ({range, intervals, gridEnabled, gridTicks, spectrumColor,
     ...fonts.body,
     fontSize: 14,
   };
+  const gridStyle = {
+    color: colors.placeholder,
+    strokeWidth: 1,
+  };
 
   return (
     <View style={styles.container}>
@@ -23,8 +27,9 @@ const SpectrumPanel = ({range, intervals, gridEnabled, gridTicks, spectrumColor,
         intervals={intervals}
         labelsStyle={labelsStyle}
         showGridLines={gridEnabled}
+        gridStyle={gridStyle}
         smallTicksPerInterval={gridTicks}
-        series={[{data: siliconSpectrumPoints}]}
+        series={[{data: siliconSpectrumPoints, color: spectrumColor}]}
       />
       <Text style={styles.body}>
         Corrimiento Raman [cm

@@ -16,6 +16,9 @@ namespace protoraman
         {
             this.PrimaryAxis = new NumericalAxis();
             this.SecondaryAxis = new NumericalAxis();
+            ChartTrackBallBehavior trackBallBehavior = new ChartTrackBallBehavior();
+            this.Behaviors.Add(trackBallBehavior);
+            this.PrimaryAxis.ShowTrackBallInfo = true;
         }
     }
 }

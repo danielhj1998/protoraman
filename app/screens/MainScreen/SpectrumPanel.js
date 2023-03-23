@@ -3,9 +3,8 @@ import {View, Text, StyleSheet, useColorScheme} from 'react-native';
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import Chart from '@app/modules/NativeChart';
-import {siliconSpectrumPoints} from '@app/utils/dummyData';
 
-const SpectrumPanel = ({range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor}) => {
+const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const labelsStyle = {
@@ -29,7 +28,7 @@ const SpectrumPanel = ({range, intervals, gridEnabled, gridTicks, spectrumColor,
         showGridLines={gridEnabled}
         gridStyle={gridStyle}
         smallTicksPerInterval={gridTicks}
-        series={[{data: siliconSpectrumPoints, color: spectrumColor}]}
+        series={[{data: data, color: spectrumColor}]}
       />
       <Text style={styles.body}>
         Corrimiento Raman [cm

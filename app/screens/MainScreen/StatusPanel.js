@@ -9,7 +9,23 @@ const StatusPanel = ({isConnected, processState}) => {
   const styles = dynamicStyles(colors);
   const deviceStatusColor = isConnected ? colors.green : colors.gray;
   const deviceState = isConnected ? "Connected" : "Disconnected";
-  const processStatusColor = colors.gray;
+  let processStatusColor = colors.gray;
+  let processDescription = "";
+
+  switch (processState) {
+    case "iniciando":
+      processStatusColor = colors.yellow;
+      processDescription = "Verificando estado del dispositivo"
+      break;
+    case "inactivo":
+      processStatusColor = colors.gray;
+      processDescription = "Listo para capturar el espectro"
+      break;
+    default:
+      processStatusColor = colors.red;
+      processDescription = "Error al leer el estado del dispositivo";
+      break;
+  };
 
   return (
     <View style={styles.container}>
@@ -24,7 +40,7 @@ const StatusPanel = ({isConnected, processState}) => {
         <Icon name="dots-horizontal" color={processStatusColor} size={30} />
         <Text style={[styles.body, {textTransform: "capitalize"}]}>{processState}</Text>
       </View>
-      <Text style={[styles.body, styles.description]}>Listo para capturar el espectro</Text>
+      <Text style={[styles.body, styles.description]}>{processDescription}</Text>
     </View>
   );
 };

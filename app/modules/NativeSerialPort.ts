@@ -9,6 +9,7 @@ export interface Spec extends TurboModule {
   deviceWriteUInt16(number: number): Promise<bool>;
   deviceReadString(stringLength: number): Promise<string>;
   deviceReadUInt16(): Promise<number>;
+  deviceReadUInt16Array(arrayLength: number): Promise<Array<Number>>;
 }
 
 export default TurboModuleRegistry.get<Spec>(

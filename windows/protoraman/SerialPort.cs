@@ -189,7 +189,8 @@ namespace protoraman
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(10000);
                 var bytesRead = await dataReader.LoadAsync(sizeof(UInt16)).AsTask(cts.Token);
-                tcs.SetResult(dataReader.ReadUInt16());                
+                tcs.SetResult(dataReader.ReadUInt16());
+                dataReader.DetachStream();
                 dataReader.Dispose();
             }
             catch (Exception exception)
@@ -215,7 +216,6 @@ namespace protoraman
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.CancelAfter(10000);
                 var bytesRead = await dataReader.LoadAsync(stringLength).AsTask(cts.Token);
-                OnDataRead?.Invoke(bytesRead.ToString());
                 char[] chars = new char[stringLength];
                 for(int i=0; i<stringLength; i++)
                 {
@@ -224,31 +224,54 @@ namespace protoraman
                 tcs.SetResult(new string(chars));
                 dataReader.DetachStream();
                 dataReader.Dispose();
-
-                //var inputStream = this.device.InputStream;
-                //var dataReader = new DataReader(inputStream)
-                //{
-                //    InputStreamOptions = InputStreamOptions.Partial,
-                //    ByteOrder = ByteOrder.LittleEndian
-                //};
-                //CancellationTokenSource cts = new CancellationTokenSource();
-                //cts.CancelAfter(10000);
-                //var bytesRead = await dataReader.LoadAsync(sizeof(UInt16)).AsTask(cts.Token);
-                //var bufferLength = dataReader.ReadUInt16();
-                //bytesRead = await dataReader.LoadAsync(bufferLength).AsTask(cts.Token);
-
-                //var data = new JSValueArray();
-                //while (dataReader.UnconsumedBufferLength > 0)
-                //{
-                //    data.Add(dataReader.ReadSingle());
-                //}
-
-                //tcs.SetResult(data);
-                //dataReader.Dispose();
             }
             catch (Exception exception)
             {
                 tcs.SetException(exception);                
+            }
+            var result = await tcs.Task;
+            return result;
+        }
+
+        [ReactMethod("deviceReadUInt16Array")]
+        public async Task<JSValue> DeviceReadUInt16Array(uint arrayLength)
+        {
+            TaskCompletionSource<JSValue> tcs = new TaskCompletionSource<JSValue>();
+            try
+            {
+                var inputStream = this.device.InputStream;
+                var dataReader = new DataReader(inputStream)
+                {
+                    InputStreamOptions = InputStreamOptions.Partial,
+                    ByteOrder = ByteOrder.LittleEndian
+                };
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(10000);
+                JSValueArray data = new JSValueArray();
+                uint unloadedBufferLength = arrayLength * sizeof(UInt16);
+                while (unloadedBufferLength > 0)
+                {
+                    if (unloadedBufferLength > 1000)
+                    {
+                        var bytesRead = await dataReader.LoadAsync(1000).AsTask(cts.Token);
+                    }
+                    else
+                    {
+                        var bytesRead = await dataReader.LoadAsync(unloadedBufferLength).AsTask(cts.Token);
+                    }
+                    unloadedBufferLength -= dataReader.UnconsumedBufferLength;
+                    while (dataReader.UnconsumedBufferLength > 0)
+                    {
+                        data.Add(dataReader.ReadUInt16());
+                    }
+                }
+                tcs.SetResult(data);
+                dataReader.DetachStream();
+                dataReader.Dispose();
+            }
+            catch (Exception exception)
+            {
+                tcs.SetException(exception);
             }
             var result = await tcs.Task;
             return result;

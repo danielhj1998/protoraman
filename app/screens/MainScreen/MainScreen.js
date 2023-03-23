@@ -12,7 +12,8 @@ import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 import SerialPort from '@app/modules/NativeSerialPort.ts';
 import { NativeEventEmitter } from 'react-native';
-import {} from '@app/helpers/deviceRequests';
+import {getDeviceState, States} from '@app/helpers/deviceRequests';
+import {siliconSpectrumPoints} from '@app/utils/dummyData';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
@@ -20,17 +21,54 @@ const MainScreen = () => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
+  const [processState, setProcessState] = useState("iniciando");
+  const [isDeviceConnected, setIsDeviceConnected] = useState(true);
+  const [data, setData] = useState(siliconSpectrumPoints);
   let eventSubscriptions = [];
 
   const handleTakeSample = async () => {
-    SerialPort.deviceWriteString('n');
-    //const res = await SerialPort.deviceReadString();
-    //console.log(res);
+    try{
+      await SerialPort.deviceWriteString("n");
+      const header = await SerialPort.deviceReadString(1);
+      const arrayLength = await SerialPort.deviceReadUInt16();
+      const array = await SerialPort.deviceReadUInt16Array(arrayLength);
+      const wavelengthStep = (598 - 528) / arrayLength;
+      const newData = array.map((n, i) => [wavelength2ramanshift(528 + i * wavelengthStep, 520), n / 4095]);
+      setData(newData);
+    }catch(error){
+      console.log(error);
+    }
+  };
+
+  const wavelength2ramanshift = (wavelength, excitationWavelength) => {
+    return 1e7 / excitationWavelength - 1e7 / wavelength;
   };
 
   const onDataRead = (s) => {
-    console.log(s);
+    console.log('DataRead:' + s);
   }
+
+  useEffect(() => {
+    const getState = async () => {
+      const state = await getDeviceState(SerialPort);
+      switch(state) {
+        case States.DEVICE_INITIALIZING:
+          if (processState !== "iniciando") {
+            setProcessState("iniciando");
+          }
+          break;
+        case States.DEVICE_READY:
+          if (processState !== "inactivo") {
+            setProcessState("inactivo");
+          }
+          break;
+        default:
+          break;
+      };
+    };
+
+    setInterval(getState, 1000);
+  }, []);
 
   useEffect(() => {
     eventSubscriptions.push(SerialPortEmitter.addListener('onDataRead', onDataRead));
@@ -41,7 +79,7 @@ const MainScreen = () => {
       <View style={styles.topPanelContainer}>
         <ProcessControlPanel onTakeSamplePress={handleTakeSample} />
         <View style={styles.statusIconsContainer}>
-          <StatusPanel isConnected={true} processState="inactivo" />
+          <StatusPanel isConnected={isDeviceConnected} processState={processState} />
           <TouchableOpacity>
             <Icon name="information" color={colors.gray} size={40} />
           </TouchableOpacity>
@@ -55,6 +93,7 @@ const MainScreen = () => {
       </View>
       <View style={styles.spectrumPanel}>
         <SpectrumPanel
+          data={data}
           range={spectrumSettings.viewRange}
           intervals={spectrumSettings.tickStep}
           gridEnabled={spectrumSettings.gridEnabled}

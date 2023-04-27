@@ -15,6 +15,8 @@ const SpectrumSettingsPanel = ({
   onChangeSettings,
   onSnapshotSavePress,
   onDataSavePress,
+  rangeSelectionMode,
+  onChangeRangeSelectionMode
 }) => {
   const colors = getColors(useColorScheme() === 'dark');
   const styles = dynamicStyles(colors);
@@ -48,6 +50,8 @@ const SpectrumSettingsPanel = ({
       <RangeSetting
         range={settings.viewRange}
         onChangeRange={v => onChangeSettings({...settings, viewRange: v})}
+        rangeSelectionMode={rangeSelectionMode}
+        onChangeRangeSelectionMode={onChangeRangeSelectionMode}
       />
       <TickStepSetting
         tickStep={settings.tickStep}

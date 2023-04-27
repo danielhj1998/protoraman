@@ -1,25 +1,33 @@
 const Headers = {
   DEVICE_IDENTIFY: 'i',
   DEVICE_STATE: 's',
+  TAKE_SAMPLE: 'S',
 };
 
 export const States = {
-  DEVICE_INITIALIZING: '1',
-  DEVICE_READY: '2',
+  DEVICE_ERROR: '-1',
+  DEVICE_CONNECTING: '1',
+  DEVICE_INITIALIZING: '2',
+  DEVICE_READY: '3',
+  DEVICE_DISCONNECTED: '4',
 };
 
 export const protoRamanDeviceIdentify = async (serial) => {
-  let isDeviceIdentified = false;
-  await serial.deviceWriteString(Headers.DEVICE_IDENTIFY + 'proto');
+  await serial.deviceWriteString(Headers.DEVICE_IDENTIFY);
   const header = await serial.deviceReadString(1);
   if(header === Headers.DEVICE_IDENTIFY) {
-    const handshakeHalf = 'raman';
-    const word = await serial.deviceReadString(handshakeHalf.length);
-    if(word === handshakeHalf){
-      isDeviceIdentified = true;
-    }
+    return true;
   }
-  return isDeviceIdentified;
+  return false;
+};
+
+export const startWatcher = async (serial) => {
+  const stat = await serial.getWatcherStatus();
+  if (stat === "Stopped") {
+    serial.startWatcher();
+    return true;
+  }
+  return false;
 };
 
 export const getDeviceState = async (serial) => {

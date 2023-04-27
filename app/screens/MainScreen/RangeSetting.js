@@ -5,9 +5,15 @@ import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import NumberInput from '@app/components/NumberInput';
 
-const RangeSetting = ({range, onChangeRange}) => {
+const RangeSetting = ({range, onChangeRange, rangeSelectionMode, onChangeRangeSelectionMode}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
+  const pressedButtonStyle = {...styles.buttonIcon, backgroundColor: colors.body + 'A0'};
+
+  const handleOnRangeButtonPress = (mode) => {
+    const newMode = mode === rangeSelectionMode ? "none" : mode;
+    onChangeRangeSelectionMode(newMode);
+  };
 
   return (
     <View>
@@ -21,11 +27,15 @@ const RangeSetting = ({range, onChangeRange}) => {
         />
       </View>
       <View style={styles.optionContainer}>
-        <TouchableOpacity style={styles.buttonIcon}>
+        <TouchableOpacity
+          style={rangeSelectionMode == "xy" ? pressedButtonStyle : styles.buttonIcon}
+          onPress={() => handleOnRangeButtonPress('xy')}>
           <Icon name="arrow-expand" color={colors.body} size={25} />
         </TouchableOpacity>
         <View style={styles.horizontalContainer}>
-          <TouchableOpacity style={styles.buttonIcon}>
+          <TouchableOpacity
+            style={rangeSelectionMode == "x" ? pressedButtonStyle : styles.buttonIcon}
+            onPress={() => handleOnRangeButtonPress('x')}>
             <Icon
               name="arrow-expand-horizontal"
               color={colors.body}
@@ -48,7 +58,9 @@ const RangeSetting = ({range, onChangeRange}) => {
           <Text style={[styles.body, styles.superscript]}>-1</Text>
         </View>
         <View style={styles.horizontalContainer}>
-          <TouchableOpacity style={styles.buttonIcon}>
+          <TouchableOpacity
+            style={rangeSelectionMode == "y" ? pressedButtonStyle : styles.buttonIcon}
+            onPress={() => handleOnRangeButtonPress('y')}>
             <Icon name="arrow-expand-vertical" color={colors.body} size={25} />
           </TouchableOpacity>
           <Text style={[styles.body, styles.leftMargin]}>:</Text>

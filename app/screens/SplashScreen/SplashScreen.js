@@ -15,15 +15,14 @@ const SplashScreen = ({navigation}) => {
   let eventSubscriptions = [];
 
   const onDeviceConnected = () => {
-    setTimeout(() => {
-      protoRamanDeviceIdentify(SerialPort).then(correct => {
-        if(correct){
-          eventSubscriptions.forEach(s => s.remove());
-          navigation.navigate('Main');
-        } else {
-          Serial.deviceDispose();
-        }
-      });
+    setTimeout(async () => {
+      const correct = await protoRamanDeviceIdentify(SerialPort);
+      if(correct){
+        eventSubscriptions.forEach(s => s.remove());
+        navigation.navigate('Main');
+      } else {
+        SerialPort.deviceDispose();
+      }
     }, 2000);
   }
 
@@ -45,6 +44,8 @@ const SplashScreen = ({navigation}) => {
     };
 
     setTimeout(() => setListeners(), 2000);
+    //SerialPort.createWatcher();
+    //navigation.navigate('Main');
   },[]);
 
   return (

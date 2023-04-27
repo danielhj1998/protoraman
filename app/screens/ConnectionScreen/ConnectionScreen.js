@@ -26,19 +26,20 @@ const ConnectionScreen = ({navigation}) => {
   }
 
   const onDeviceConnected = () => {
-    setTimeout(() => {
-      protoRamanDeviceIdentify(SerialPort).then(correct => {
-        if(correct){
-          setScript('Conectado');
-          setIconName('check-circle');
-          setIconColor(colors.green);
+    setTimeout(async () => {
+      const correct = await protoRamanDeviceIdentify(SerialPort);
+      if(correct){
+        setScript('Conectado');
+        setIconName('check-circle');
+        setIconColor(colors.green);
+        setTimeout(() => {
           eventSubscriptions.forEach(s => s.remove());
-          setTimeout(() => navigation.navigate('Main'), 2000);
-        } else {
-          Serial.deviceDispose();
-        }
-      });
-    }, 1000);
+          navigation.navigate('Main');
+        }, 1000);
+      } else {
+        Serial.deviceDispose();
+      }
+    }, 2000);
   }
 
   const onConnectionFailed = (stat) => {

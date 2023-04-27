@@ -4,7 +4,7 @@ import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import Chart from '@app/modules/NativeChart';
 
-const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor}) => {
+const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor, zoomMode}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const labelsStyle = {
@@ -29,6 +29,7 @@ const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrum
         gridStyle={gridStyle}
         smallTicksPerInterval={gridTicks}
         series={[{data: data, color: spectrumColor}]}
+        zoomMode={zoomMode}
       />
       <Text style={styles.body}>
         Corrimiento Raman [cm

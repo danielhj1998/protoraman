@@ -20,10 +20,21 @@ namespace protoraman
     {
         #region Atributtes
         private const string AQS = "System.ItemNameDisplay:=\"FT232R USB UART\" AND " +
+        //private const string AQS = "System.ItemNameDisplay:=\"STM32 STLink\" AND " +
             "System.Devices.InterfaceClassGuid:=\"{86e0d1e0-8089-11d0-9ce4-08003e301f73}\"" +
             "System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
         private bool connecting = false;
         private SerialDevice device = null;
+        private DeviceWatcher watcher;
+        //[ReactConstant]
+        //public JSValueObject watcherStatus = new JSValueObject() {
+        //                { "Aborted", (int)DeviceWatcherStatus.Aborted },
+        //                { "Created", (int)DeviceWatcherStatus.Created },
+        //                { "Completed", (int)DeviceWatcherStatus.EnumerationCompleted },
+        //                { "Started", (int)DeviceWatcherStatus.Started },
+        //                { "Stopped", (int)DeviceWatcherStatus.Stopped },
+        //                { "Stopping", (int)DeviceWatcherStatus.Stopping }
+        //            };
         #endregion
 
         #region Methods
@@ -74,18 +85,39 @@ namespace protoraman
         [ReactMethod("createWatcher")]
         public void CreateWatcher()
         {
-            var deviceWatcher = DeviceInformation.CreateWatcher(AQS);
+            this.watcher = DeviceInformation.CreateWatcher(AQS);
 
-            deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>
+            this.watcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>
                                     (this.OnDeviceAdded);
 
-            deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>
+            this.watcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>
                                     (this.OnEnumerationCompleted);
 
-            deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>
+            this.watcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>
                                     (this.OnDeviceRemoved);
 
-            deviceWatcher.Start();
+            this.watcher.Start();
+        }
+
+        [ReactMethod("getWatcherStatus")]
+        public async Task<string> GetWatcherStatus()
+        {
+            var tcs = new TaskCompletionSource<string>();
+            tcs.SetResult(this.watcher.Status.ToString());
+
+            return await tcs.Task;
+        }
+
+        [ReactMethod("startWatcher")]
+        public void StartWatcher()
+        {
+            this.watcher.Start();
+        }
+
+        [ReactMethod("stopWatcher")]
+        public void StopWatcher()
+        {
+            this.watcher.Stop();
         }
 
         private async void OnDeviceAdded(DeviceWatcher watcher, DeviceInformation deviceInfo)
@@ -124,7 +156,7 @@ namespace protoraman
         private void OnDeviceRemoved(DeviceWatcher watcher, DeviceInformationUpdate deviceInfo)
         {
             this.DeviceDispose();
-            OndeviceDisconnected?.Invoke();
+            OnDeviceDisconnected?.Invoke();
         }
 
 
@@ -287,7 +319,7 @@ namespace protoraman
         public Action OnDeviceConnected { get; set; }
 
         [ReactEvent("onDeviceDisconnected")]
-        public Action OndeviceDisconnected { get; set; }
+        public Action OnDeviceDisconnected { get; set; }
 
         [ReactEvent("onInitialDeviceNotPlugged")]
         public Action OnInitialDeviceNotPlugged { get; set; }

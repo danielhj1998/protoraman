@@ -121,7 +121,30 @@ namespace protoraman
             }
         }
 
-        [ViewManagerProperty("intervals")]
+        [ViewManagerProperty("zoomMode")]
+        public void SetZoomMode(ChartControl view, string mode)
+        {
+            var zooming = (ChartZoomPanBehavior)view.Behaviors[1];
+            switch (mode) {
+                case "xy":
+                    zooming.EnableSelectionZooming = true;
+                    break;
+                case "x":
+                    zooming.EnableSelectionZooming = true;
+                    zooming.ZoomMode = ZoomMode.X;
+                    break;
+                case "y":
+                    zooming.EnableSelectionZooming = true;
+                    zooming.ZoomMode = ZoomMode.Y;
+                    break;
+                default:
+                    zooming.EnableSelectionZooming = false;
+                    zooming.ZoomMode = ZoomMode.XY;
+                    break;
+            }
+        }
+
+            [ViewManagerProperty("intervals")]
         public void SetIntervals(ChartControl view, IDictionary<string, JSValue> intervals)
         {
             if (intervals.Count > 0)

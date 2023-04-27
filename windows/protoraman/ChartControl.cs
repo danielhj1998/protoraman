@@ -18,6 +18,12 @@ namespace protoraman
             this.SecondaryAxis = new NumericalAxis();
             ChartTrackBallBehavior trackBallBehavior = new ChartTrackBallBehavior();
             this.Behaviors.Add(trackBallBehavior);
+            ChartZoomPanBehavior zooming = new ChartZoomPanBehavior()
+            {
+                EnableMouseWheelZooming = true,
+                ZoomRelativeToCursor = true
+            };
+            this.Behaviors.Add(zooming);
             this.PrimaryAxis.ShowTrackBallInfo = true;
         }
     }

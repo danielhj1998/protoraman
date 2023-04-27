@@ -12,7 +12,7 @@ import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 import SerialPort from '@app/modules/NativeSerialPort.ts';
 import { NativeEventEmitter } from 'react-native';
-import {getDeviceState, States} from '@app/helpers/deviceRequests';
+import {protoRamanDeviceIdentify, startWatcher, States} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints} from '@app/utils/dummyData';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
@@ -21,17 +21,19 @@ const MainScreen = () => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
-  const [processState, setProcessState] = useState("iniciando");
-  const [isDeviceConnected, setIsDeviceConnected] = useState(true);
+  const [processState, setProcessState] = useState(States.DEVICE_INITIALIZING);
   const [data, setData] = useState(siliconSpectrumPoints);
+  const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   let eventSubscriptions = [];
 
   const handleTakeSample = async () => {
     try{
-      await SerialPort.deviceWriteString("n");
+      await SerialPort.deviceWriteString("S");
       const header = await SerialPort.deviceReadString(1);
-      const arrayLength = await SerialPort.deviceReadUInt16();
+      console.log(header);
+      const arrayLength = 3694;
       const array = await SerialPort.deviceReadUInt16Array(arrayLength);
+      console.log(array);
       const wavelengthStep = (598 - 528) / arrayLength;
       const newData = array.map((n, i) => [wavelength2ramanshift(528 + i * wavelengthStep, 520), n / 4095]);
       setData(newData);
@@ -44,42 +46,58 @@ const MainScreen = () => {
     return 1e7 / excitationWavelength - 1e7 / wavelength;
   };
 
-  const onDataRead = (s) => {
-    console.log('DataRead:' + s);
+  const onDeviceConnected = () => {
+    setTimeout(async () => {
+      const correct = await protoRamanDeviceIdentify(SerialPort);
+      if(correct) {
+        setProcessState(States.DEVICE_INITIALIZING);
+      } else {
+        Serial.deviceDispose();
+      }
+    }, 2000);
   }
 
   useEffect(() => {
-    const getState = async () => {
-      const state = await getDeviceState(SerialPort);
-      switch(state) {
-        case States.DEVICE_INITIALIZING:
-          if (processState !== "iniciando") {
-            setProcessState("iniciando");
-          }
-          break;
-        case States.DEVICE_READY:
-          if (processState !== "inactivo") {
-            setProcessState("inactivo");
-          }
-          break;
-        default:
-          break;
-      };
+    const addListeners = async () => {
+      eventSubscriptions.push(
+        SerialPortEmitter.addListener('onConnecting', () =>
+          setProcessState(States.DEVICE_CONNECTING),
+        ),
+      );
+      eventSubscriptions.push(
+        SerialPortEmitter.addListener('onDeviceConnected', onDeviceConnected),
+      );
+      eventSubscriptions.push(
+        SerialPortEmitter.addListener('onDeviceDisconnected', () =>
+          setProcessState(States.DEVICE_DISCONNECTED),
+        ),
+      );
+      eventSubscriptions.push(
+        SerialPortEmitter.addListener('onConnectionFailed', () =>
+          setProcessState(States.DEVICE_ERROR),
+        ),
+      );
     };
 
-    setInterval(getState, 1000);
+    startWatcher(SerialPort);
+    addListeners();
   }, []);
 
-  useEffect(() => {
-    eventSubscriptions.push(SerialPortEmitter.addListener('onDataRead', onDataRead));
-  }, []);
+  //useEffect(() => {
+    //const getState = async () => {
+      //const state = await getDeviceState(SerialPort);
+      //setProcessState(state);
+    //};
+
+    //setInterval(getState, 1000);
+  //}, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.topPanelContainer}>
         <ProcessControlPanel onTakeSamplePress={handleTakeSample} />
         <View style={styles.statusIconsContainer}>
-          <StatusPanel isConnected={isDeviceConnected} processState={processState} />
+          <StatusPanel processState={processState} />
           <TouchableOpacity>
             <Icon name="information" color={colors.gray} size={40} />
           </TouchableOpacity>
@@ -100,10 +118,13 @@ const MainScreen = () => {
           gridTicks={spectrumSettings.gridTicks}
           spectrumColor={spectrumSettings.spectrumColor}
           graphColor={spectrumSettings.graphColor}
+          zoomMode={rangeSelectionMode}
         />
         <SpectrumSettingsPanel
           settings={spectrumSettings}
           onChangeSettings={setSpectrumSettings}
+          rangeSelectionMode={rangeSelectionMode}
+          onChangeRangeSelectionMode={setRangeSelectionMode}
         />
       </View>
     </View>

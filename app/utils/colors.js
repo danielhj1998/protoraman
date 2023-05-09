@@ -6,6 +6,19 @@ export const getColors = (isDarkMode) => {
   }
 };
 
+export const getColorKey = (color) => {
+  for(const [key, value] of Object.entries(darkColorScheme)) {
+    if (value === color) {
+      return key;
+    }
+  }
+  for(const [key, value] of Object.entries(lightColorScheme)) {
+    if (value === color) {
+      return key;
+    }
+  }
+};
+
 const darkColorScheme = {
   background: "#34343A",
   body: "#E5E5E5",

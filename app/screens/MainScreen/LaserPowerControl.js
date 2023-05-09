@@ -13,15 +13,11 @@ const LaserPowerControl = ({power, onPowerSelect}) => {
   const styles = dynamicStyles(colors);
   const value = String(power) + " mW";
 
-  const onSelect = (value) => {
-    onPowerSelect(Number(value.slice(0,3)));
-  };
-
   return (
     <View style={styles.controlOp}>
       <Text style={styles.body}>Potencia del láser</Text>
       <SvgXml style={styles.icon} width="30" height="30" xml={laserSvg} />
-      <DropDownButton value={value} options={laserPowerOptions} onSelect={v => onSelect(v)}/>
+      <DropDownButton value={value} options={laserPowerOptions} onSelect={v => onPowerSelect(Number(v.slice(0,-2)))}/>
     </View>
   );
 };

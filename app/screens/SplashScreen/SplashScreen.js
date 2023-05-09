@@ -43,9 +43,9 @@ const SplashScreen = ({navigation}) => {
       eventSubscriptions.push(SerialPortEmitter.addListener('onConnectionFailed', onConnectionFailed));
     };
 
-    setTimeout(() => setListeners(), 2000);
-    //SerialPort.createWatcher();
-    //navigation.navigate('Main');
+    //setTimeout(() => setListeners(), 2000);
+    SerialPort.createWatcher();
+    navigation.navigate('Main');
   },[]);
 
   return (

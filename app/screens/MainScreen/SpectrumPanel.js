@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet, useColorScheme} from 'react-native';
-import {getColors} from '@app/utils/colors';
+import {getColors, getColorKey} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import Chart from '@app/modules/NativeChart';
 
-const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor, zoomMode}) => {
-  const colors = getColors(useColorScheme() === "dark");
+const SpectrumPanel = React.forwardRef(({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor, zoomMode}, chartRef) => {
+  const colors = getColors(graphColor === getColors(false).body);
   const styles = dynamicStyles(colors);
   const labelsStyle = {
     edgeLabelsDrawingMode: 'fit',
@@ -17,10 +17,12 @@ const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrum
     color: colors.placeholder,
     strokeWidth: 1,
   };
+  const seriesColor = colors[getColorKey(spectrumColor)];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: graphColor}]}>
       <Chart
+        ref={chartRef}
         style={[styles.chart, {backgroundColor: graphColor}]}
         range={range}
         intervals={intervals}
@@ -28,7 +30,7 @@ const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrum
         showGridLines={gridEnabled}
         gridStyle={gridStyle}
         smallTicksPerInterval={gridTicks}
-        series={[{data: data, color: spectrumColor}]}
+        series={[{data: data, color: seriesColor}]}
         zoomMode={zoomMode}
       />
       <Text style={styles.body}>
@@ -37,7 +39,7 @@ const SpectrumPanel = ({data, range, intervals, gridEnabled, gridTicks, spectrum
       </Text>
     </View>
   );
-};
+});
 
 const dynamicStyles = (colors) =>{
   return StyleSheet.create({

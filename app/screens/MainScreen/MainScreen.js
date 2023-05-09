@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {View, StyleSheet, useColorScheme, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
@@ -12,7 +12,7 @@ import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 import SerialPort from '@app/modules/NativeSerialPort.ts';
 import { NativeEventEmitter } from 'react-native';
-import {protoRamanDeviceIdentify, startWatcher, States} from '@app/helpers/deviceRequests';
+import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints} from '@app/utils/dummyData';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
@@ -24,26 +24,12 @@ const MainScreen = () => {
   const [processState, setProcessState] = useState(States.DEVICE_INITIALIZING);
   const [data, setData] = useState(siliconSpectrumPoints);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
+  const chartRef = useRef();
   let eventSubscriptions = [];
 
-  const handleTakeSample = async () => {
-    try{
-      await SerialPort.deviceWriteString("S");
-      const header = await SerialPort.deviceReadString(1);
-      console.log(header);
-      const arrayLength = 3694;
-      const array = await SerialPort.deviceReadUInt16Array(arrayLength);
-      console.log(array);
-      const wavelengthStep = (598 - 528) / arrayLength;
-      const newData = array.map((n, i) => [wavelength2ramanshift(528 + i * wavelengthStep, 520), n / 4095]);
-      setData(newData);
-    }catch(error){
-      console.log(error);
-    }
-  };
-
-  const wavelength2ramanshift = (wavelength, excitationWavelength) => {
-    return 1e7 / excitationWavelength - 1e7 / wavelength;
+  const handleTakeSample = async (power, exposure, readings) => {
+    const spectrum = await getSpectrum(SerialPort, power / 20 - 1, exposure, readings);
+    setData(spectrum);
   };
 
   const onDeviceConnected = () => {
@@ -68,9 +54,13 @@ const MainScreen = () => {
         SerialPortEmitter.addListener('onDeviceConnected', onDeviceConnected),
       );
       eventSubscriptions.push(
-        SerialPortEmitter.addListener('onDeviceDisconnected', () =>
-          setProcessState(States.DEVICE_DISCONNECTED),
-        ),
+        SerialPortEmitter.addListener('onDeviceDisconnected', () => {
+          try {
+            setProcessState(States.DEVICE_DISCONNECTED);
+          } catch(err) {
+            console.log(err);
+          }
+        }),
       );
       eventSubscriptions.push(
         SerialPortEmitter.addListener('onConnectionFailed', () =>
@@ -111,6 +101,7 @@ const MainScreen = () => {
       </View>
       <View style={styles.spectrumPanel}>
         <SpectrumPanel
+          ref={chartRef}
           data={data}
           range={spectrumSettings.viewRange}
           intervals={spectrumSettings.tickStep}
@@ -125,6 +116,7 @@ const MainScreen = () => {
           onChangeSettings={setSpectrumSettings}
           rangeSelectionMode={rangeSelectionMode}
           onChangeRangeSelectionMode={setRangeSelectionMode}
+          onSnapshotSavePress={() => {chartRef.current.saveChart()}}
         />
       </View>
     </View>

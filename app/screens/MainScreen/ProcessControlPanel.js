@@ -3,7 +3,7 @@ import {View, TouchableOpacity, Text, StyleSheet, useColorScheme} from 'react-na
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import LaserPowerControl from '@app/screens/MainScreen/LaserPowerControl';
-import ExposureTimeControl from '@app/screens/MainScreen/ExposureTimeControl';
+import ExposureTimeControl, {exposureTimeOptions} from '@app/screens/MainScreen/ExposureTimeControl';
 import SpectrumReadingsControl from '@app/screens/MainScreen/SpectrumReadingsControl';
 import ReadingTimeDisplay from '@app/screens/MainScreen/ReadingTimeDisplay';
 import { SvgXml } from 'react-native-svg';
@@ -17,7 +17,7 @@ const ProcessControlPanel = ({onTakeSamplePress}) => {
   const styles = dynamicStyles(colors);
   const [controlTabActive, setControlTabActive] = useState(true);
   const [laserPower, setLaserPower] = useState(20);
-  const [exposureTime, setExposureTime] = useState(120);
+  const [exposureTime, setExposureTime] = useState(100);
   const [spectrumReadings, setSpectrumReadings] = useState(5);
   const [readingTime, setReadingTime] = useState(0.6);
 
@@ -50,7 +50,11 @@ const ProcessControlPanel = ({onTakeSamplePress}) => {
         <SvgXml style={styles.icon} width="30" height="30" xml={svgImage} />
         <ReadingTimeDisplay readingTime={readingTime} />
         <View style={styles.separator} />
-        <TakeSampleButton onTakeSamplePress={onTakeSamplePress} />
+        <TakeSampleButton
+          onTakeSamplePress={() =>
+            onTakeSamplePress(laserPower, exposureTime, spectrumReadings)
+          }
+        />
       </View>
     );
   };

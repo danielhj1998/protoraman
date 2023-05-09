@@ -39,3 +39,28 @@ export const getDeviceState = async (serial) => {
   }
   return null;
 };
+
+export const getSpectrum = async (serial, powerIndex, exposure, readings) => {
+  try{
+    await serial.deviceWriteString(Headers.TAKE_SAMPLE);
+    const header = await serial.deviceReadString(1);
+    if(header === Headers.TAKE_SAMPLE) {
+      await serial.deviceWriteUInt16Array([powerIndex, exposure]);
+      //await serial.deviceWriteUInt16(powerIndex);
+      //await serial.deviceWriteUInt16(exposure);
+      const arrayLength = 3694;
+      const array = await serial.deviceReadUInt16Array(arrayLength);
+      console.log(array);
+      const wavelengthStep = (598 - 528) / arrayLength;
+      const newData = array.map((n, i) => [wavelength2ramanshift(528 + i * wavelengthStep, 520), n / 4095]);
+      return newData;
+    }
+  }catch(error){
+    console.log(error);
+  }
+};
+
+const wavelength2ramanshift = (wavelength, excitationWavelength) => {
+  return 1e7 / excitationWavelength - 1e7 / wavelength;
+};
+

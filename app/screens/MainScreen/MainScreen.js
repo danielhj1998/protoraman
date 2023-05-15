@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {View, StyleSheet, useColorScheme, TouchableOpacity} from 'react-native';
+import {View, Modal, StyleSheet, Text, useColorScheme, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
 import svgImage from '@assets/images/settings-48-filled.svg';
@@ -11,6 +11,7 @@ import SpectrumPanel from '@app/screens/MainScreen/SpectrumPanel';
 import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel';
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 import SerialPort from '@app/modules/NativeSerialPort.ts';
+import FilePicker from '@app/modules/NativeFilePicker.ts';
 import { NativeEventEmitter } from 'react-native';
 import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints} from '@app/utils/dummyData';
@@ -22,14 +23,26 @@ const MainScreen = () => {
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
   const [processState, setProcessState] = useState(States.DEVICE_INITIALIZING);
-  const [data, setData] = useState(siliconSpectrumPoints);
+  const [data, setData] = useState([{data: siliconSpectrumPoints, color: defaultSpectrumSettings(colors).spectrumColor}]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   const chartRef = useRef();
   let eventSubscriptions = [];
 
+  const handleOnSpectrumSettingsChanged = (settings) => {
+    setSpectrumSettings(settings);
+    let newData = [...data];
+    newData[newData.length - 1].color = settings.spectrumColor;
+    setData(newData);
+  };
+
   const handleTakeSample = async (power, exposure, readings) => {
     const spectrum = await getSpectrum(SerialPort, power / 20 - 1, exposure, readings);
-    setData(spectrum);
+    if(spectrumSettings.holdEnabled === true) {
+      setData([...data, {data: spectrum, color: spectrumSettings.spectrumColor}]);
+    } else {
+      console.log(spectrumSettings.holdEnabled);
+      setData([{data: spectrum, color: spectrumSettings.spectrumColor}]);
+    }
   };
 
   const onDeviceConnected = () => {
@@ -42,6 +55,14 @@ const MainScreen = () => {
       }
     }, 2000);
   }
+
+  const snapshotSaveHandler = async (format) => {
+    chartRef.current.saveChart("espectro", [format]);
+  };
+
+  const dataSaveHandler = async (format) => {
+    chartRef.current.saveData("espectro", [format]);
+  };
 
   useEffect(() => {
     const addListeners = async () => {
@@ -107,16 +128,16 @@ const MainScreen = () => {
           intervals={spectrumSettings.tickStep}
           gridEnabled={spectrumSettings.gridEnabled}
           gridTicks={spectrumSettings.gridTicks}
-          spectrumColor={spectrumSettings.spectrumColor}
           graphColor={spectrumSettings.graphColor}
           zoomMode={rangeSelectionMode}
         />
         <SpectrumSettingsPanel
           settings={spectrumSettings}
-          onChangeSettings={setSpectrumSettings}
+          onChangeSettings={handleOnSpectrumSettingsChanged}
           rangeSelectionMode={rangeSelectionMode}
           onChangeRangeSelectionMode={setRangeSelectionMode}
-          onSnapshotSavePress={() => {chartRef.current.saveChart()}}
+          onSnapshotSavePress={snapshotSaveHandler}
+          onDataSavePress={dataSaveHandler}
         />
       </View>
     </View>

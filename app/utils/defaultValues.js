@@ -1,5 +1,6 @@
 export const defaultSpectrumSettings = (colors) => {
   return {
+    holdEnabled: false,
     spectrumColor: colors.orange,
     graphColor: colors.background,
     gridEnabled: true,

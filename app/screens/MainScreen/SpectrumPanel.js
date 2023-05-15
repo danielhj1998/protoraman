@@ -4,7 +4,7 @@ import {getColors, getColorKey} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import Chart from '@app/modules/NativeChart';
 
-const SpectrumPanel = React.forwardRef(({data, range, intervals, gridEnabled, gridTicks, spectrumColor, graphColor, zoomMode}, chartRef) => {
+const SpectrumPanel = React.forwardRef(({data, range, intervals, gridEnabled, gridTicks, graphColor, zoomMode}, chartRef) => {
   const colors = getColors(graphColor === getColors(false).body);
   const styles = dynamicStyles(colors);
   const labelsStyle = {
@@ -17,7 +17,7 @@ const SpectrumPanel = React.forwardRef(({data, range, intervals, gridEnabled, gr
     color: colors.placeholder,
     strokeWidth: 1,
   };
-  const seriesColor = colors[getColorKey(spectrumColor)];
+  const seriesList = data.map(series => {return {...series, color: colors[getColorKey(series.color)]}});
 
   return (
     <View style={[styles.container, {backgroundColor: graphColor}]}>
@@ -30,7 +30,7 @@ const SpectrumPanel = React.forwardRef(({data, range, intervals, gridEnabled, gr
         showGridLines={gridEnabled}
         gridStyle={gridStyle}
         smallTicksPerInterval={gridTicks}
-        series={[{data: data, color: seriesColor}]}
+        series={seriesList}
         zoomMode={zoomMode}
       />
       <Text style={styles.body}>

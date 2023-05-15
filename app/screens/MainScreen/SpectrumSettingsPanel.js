@@ -80,14 +80,14 @@ const SpectrumSettingsPanel = ({
       <SaveSetting
         title="Captura"
         iconName="camera"
-        formatOptions={['JPG', 'PNG', 'RAW']}
+        formatOptions={['JPG', 'PNG', 'BMP', 'TIFF']}
         onSavePress={onSnapshotSavePress}
       />
       <SaveSetting
         title="Guardar datos"
         iconName="content-save"
         style={styles.dataSave}
-        formatOptions={['CSV', 'XLS', 'DATA']}
+        formatOptions={['CSV', 'TXT']}
         onSavePress={onDataSavePress}
       />
     </View>

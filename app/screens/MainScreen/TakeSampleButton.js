@@ -4,14 +4,16 @@ import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const TakeSampleButton = ({onTakeSamplePress}) => {
+const TakeSampleButton = ({onTakeSamplePress, disabled}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
+
+  const buttonStyle = disabled ? styles.inactiveButtonContainer : styles.buttonContainer;
 
   return (
     <View style={styles.controlOp}>
       <Text style={styles.body}>Tomar muestra</Text>
-      <TouchableOpacity style={styles.buttonContainer} onPress={onTakeSamplePress}>
+      <TouchableOpacity style={buttonStyle} onPress={onTakeSamplePress} disabled={disabled}>
         <Icon name="play" size={60} color={colors.background}/>
       </TouchableOpacity>
     </View>
@@ -32,6 +34,11 @@ const dynamicStyles = (colors) =>{
     },
     buttonContainer: {
       backgroundColor: colors.green,
+      borderRadius: 10,
+      marginTop: 10,
+    },
+    inactiveButtonContainer: {
+      backgroundColor: colors.gray,
       borderRadius: 10,
       marginTop: 10,
     },

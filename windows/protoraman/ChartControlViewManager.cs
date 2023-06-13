@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,9 @@ using Windows.UI.Xaml.Shapes;
 using Syncfusion.UI.Xaml.Charts;
 using Windows.UI;
 using System.Diagnostics;
+using Windows.Storage;
+using Windows.Storage.Provider;
+using Windows.Graphics.Imaging;
 
 namespace protoraman
 {
@@ -19,12 +24,15 @@ namespace protoraman
     {
         private Int32 LastSmallTicksPerIntervalValue;
 
+        #region Properties
+
         [ViewManagerProperty("series")]
         public void SetSeries(ChartControl view, IList<JSValue> series)
         {
             if (null != series)
             {
-                foreach(var s in series)
+                view.Series = new ChartSeriesCollection();
+                foreach (var s in series)
                 {
                     IReadOnlyDictionary<string, JSValue> sObject = s.AsObject();
                     if (sObject.ContainsKey("data"))
@@ -41,7 +49,7 @@ namespace protoraman
                             fls.Interior = new SolidColorBrush(color);
                         }
 
-                        view.Series = new ChartSeriesCollection() { fls };
+                        view.Series.Add(fls);
                     }
                 }
             }
@@ -57,10 +65,12 @@ namespace protoraman
             if (null != value)
             {
                 view.AreaBackground = value;
+                view.Background = value;
             }
             else
             {
                 view.ClearValue(ChartControl.AreaBackgroundProperty);
+                view.ClearValue(ChartControl.BackgroundProperty);
             }
         }
 
@@ -144,7 +154,7 @@ namespace protoraman
             }
         }
 
-            [ViewManagerProperty("intervals")]
+        [ViewManagerProperty("intervals")]
         public void SetIntervals(ChartControl view, IDictionary<string, JSValue> intervals)
         {
             if (intervals.Count > 0)
@@ -285,6 +295,90 @@ namespace protoraman
             {
                 xAxis.Header = header;
             }
+        }
+
+
+        #endregion
+
+        #region commands
+        [ViewManagerCommand]
+        public async Task<bool> SaveChart(ChartControl view, IReadOnlyList<JSValue> commandArgs)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+            string suggestedName = commandArgs[0].AsString();
+            IReadOnlyList<JSValue> extensions = commandArgs[1].AsArray();
+            var file = await new FilePicker().PickFile(suggestedName, extensions);
+            Guid encoder = BitmapEncoder.JpegEncoderId;
+            switch (file.FileType) {
+                case ".jpg":
+                    encoder = BitmapEncoder.JpegEncoderId;
+                    break;
+                case ".tiff":
+                    encoder = BitmapEncoder.TiffEncoderId;
+                    break;
+                case ".png":
+                    encoder = BitmapEncoder.PngEncoderId;
+                    break;
+                case ".bmp":
+                    encoder = BitmapEncoder.BmpEncoderId;
+                    break;
+                default:
+                    break;
+            }
+            CachedFileManager.DeferUpdates(file);
+            view.Save(await file.OpenAsync(FileAccessMode.ReadWrite), encoder);
+            var status = await CachedFileManager.CompleteUpdatesAsync(file);
+            tcs.SetResult(status == FileUpdateStatus.Complete);
+
+            var result = await tcs.Task;
+            return result;
+        }
+
+        [ViewManagerCommand]
+        public async Task<bool> SaveSeries(ChartControl view, IReadOnlyList<JSValue> commandArgs)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+            string suggestedName = commandArgs[0].AsString();
+            IReadOnlyList<JSValue> extensions = commandArgs[1].AsArray();
+            var file = await new FilePicker().PickFile(suggestedName, extensions);
+            CachedFileManager.DeferUpdates(file);
+            string fileContent = "";
+            switch (file.FileType) {
+                case ".csv":
+                    fileContent = SeriesToSeparator(view.Series, ",");
+                    break;
+                case ".txt":
+                    fileContent = SeriesToSeparator(view.Series, " ");
+                    break;
+                default:
+                    break;
+            }
+            await FileIO.WriteTextAsync(file, fileContent);
+            var status = await CachedFileManager.CompleteUpdatesAsync(file);
+            tcs.SetResult(status == FileUpdateStatus.Complete);
+
+            var result = await tcs.Task;
+            return result;
+        }
+        #endregion
+
+        private string SeriesToSeparator(ChartSeriesCollection seriesList, string separator)
+        {
+            var csv = new StringBuilder();
+            var first = (List<Point>)seriesList[0].ItemsSource;
+            for(int i = 0; i < first.Count; i++)
+            {
+                string newline = "" + first[i].X;
+                foreach(var series in seriesList)
+                {
+                    var points = (List<Point>)series.ItemsSource;
+                    newline += separator + points[i].Y;
+                }
+                csv.AppendLine(newline);
+            }
+            return csv.ToString();
         }
 
         private void SetEdgeLabelsDrawingMode(NumericalAxis axis, string mode)

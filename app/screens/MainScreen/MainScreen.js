@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {View, Modal, StyleSheet, Text, useColorScheme, TouchableOpacity} from 'react-native';
+import {View, Modal, StyleSheet, Text, useColorScheme, TouchableOpacity, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SvgXml} from 'react-native-svg';
 import svgImage from '@assets/images/settings-48-filled.svg';
@@ -11,10 +11,12 @@ import SpectrumPanel from '@app/screens/MainScreen/SpectrumPanel';
 import SpectrumSettingsPanel from '@app/screens/MainScreen/SpectrumSettingsPanel';
 import {defaultSpectrumSettings} from '@app/utils/defaultValues';
 import SerialPort from '@app/modules/NativeSerialPort.ts';
-import FilePicker from '@app/modules/NativeFilePicker.ts';
+import AboutModal from '@app/screens/MainScreen/AboutModal';
+import SettingsModal from '@app/screens/MainScreen/SettingsModal';
+import HelpModal from '@app/screens/MainScreen/HelpModal';
 import { NativeEventEmitter } from 'react-native';
 import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
-import {siliconSpectrumPoints} from '@app/utils/dummyData';
+import {siliconSpectrumPoints, synthetic, linearSpectrum} from '@app/utils/dummyData';
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
@@ -22,9 +24,16 @@ const MainScreen = () => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
-  const [processState, setProcessState] = useState(States.DEVICE_INITIALIZING);
+  const [processState, setProcessState] = useState(States.DEVICE_READY);
   const [data, setData] = useState([{data: siliconSpectrumPoints, color: defaultSpectrumSettings(colors).spectrumColor}]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
+  const [isAboutPopupVisible, setIsAboutPopupVisible] = useState(false);
+  const [isHelpPopupVisible, setIsHelpPopupVisible] = useState(false);
+  const [isSettingsPopupVisible, setIsSettingsPopupVisible] = useState(false);
+  const [takeSampleEnabled, setTakeSampleEnabled] = useState(true);
+  const [laserPower, setLaserPower] = useState(20);
+  const [exposureTime, setExposureTime] = useState(100);
+  const [spectrumReadings, setSpectrumReadings] = useState(1);
   const chartRef = useRef();
   let eventSubscriptions = [];
 
@@ -36,20 +45,22 @@ const MainScreen = () => {
   };
 
   const handleTakeSample = async (power, exposure, readings) => {
+    setTakeSampleEnabled(false);
     const spectrum = await getSpectrum(SerialPort, power / 20 - 1, exposure, readings);
     if(spectrumSettings.holdEnabled === true) {
       setData([...data, {data: spectrum, color: spectrumSettings.spectrumColor}]);
     } else {
-      console.log(spectrumSettings.holdEnabled);
       setData([{data: spectrum, color: spectrumSettings.spectrumColor}]);
     }
+    setTakeSampleEnabled(true);
   };
 
   const onDeviceConnected = () => {
     setTimeout(async () => {
       const correct = await protoRamanDeviceIdentify(SerialPort);
       if(correct) {
-        setProcessState(States.DEVICE_INITIALIZING);
+        setProcessState(States.DEVICE_READY);
+        setTakeSampleEnabled(true);
       } else {
         Serial.deviceDispose();
       }
@@ -57,11 +68,13 @@ const MainScreen = () => {
   }
 
   const snapshotSaveHandler = async (format) => {
-    chartRef.current.saveChart("espectro", [format]);
+    const suggestedName = ['espectro', laserPower, 'mW', exposureTime, 'us', spectrumReadings,'veces'].join('-');
+    chartRef.current.saveChart(suggestedName, [format]);
   };
 
   const dataSaveHandler = async (format) => {
-    chartRef.current.saveData("espectro", [format]);
+    const suggestedName = ['espectro', laserPower, 'mW', exposureTime, 'us', spectrumReadings,'veces'].join('-');
+    chartRef.current.saveData(suggestedName, [format]);
   };
 
   useEffect(() => {
@@ -78,6 +91,7 @@ const MainScreen = () => {
         SerialPortEmitter.addListener('onDeviceDisconnected', () => {
           try {
             setProcessState(States.DEVICE_DISCONNECTED);
+            setTakeSampleEnabled(false);
           } catch(err) {
             console.log(err);
           }
@@ -94,30 +108,24 @@ const MainScreen = () => {
     addListeners();
   }, []);
 
-  //useEffect(() => {
-    //const getState = async () => {
-      //const state = await getDeviceState(SerialPort);
-      //setProcessState(state);
-    //};
-
-    //setInterval(getState, 1000);
-  //}, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.topPanelContainer}>
-        <ProcessControlPanel onTakeSamplePress={handleTakeSample} />
+        <ProcessControlPanel onTakeSamplePress={handleTakeSample} takeSampleEnabled={takeSampleEnabled} laserPower={laserPower} onLaserPowerChange={setLaserPower} exposureTime={exposureTime} onExposureTimeChange={setExposureTime} spectrumReadings={spectrumReadings} onSpectrumReadingsChange={setSpectrumReadings}/>
         <View style={styles.statusIconsContainer}>
           <StatusPanel processState={processState} />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsAboutPopupVisible(true)}>
             <Icon name="information" color={colors.gray} size={40} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <AboutModal isVisible={isAboutPopupVisible} onDismiss={() => setIsAboutPopupVisible(false)}/>
+          <TouchableOpacity onPress={() => setIsHelpPopupVisible(true)}>
             <Icon name="help-circle" color={colors.gray} size={40} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <HelpModal isVisible={isHelpPopupVisible} onDismiss={() => setIsHelpPopupVisible(false)}/>
+          <TouchableOpacity onPress={() => setIsSettingsPopupVisible(true)}>
             <SvgXml style={styles.svg} width="43" height="43" xml={svgImage} />
           </TouchableOpacity>
+          <SettingsModal isVisible={isSettingsPopupVisible} onDismiss={() => setIsSettingsPopupVisible(false)}/>
         </View>
       </View>
       <View style={styles.spectrumPanel}>

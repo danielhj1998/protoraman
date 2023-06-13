@@ -23,8 +23,16 @@ namespace protoraman
                 EnableMouseWheelZooming = true,
                 ZoomRelativeToCursor = true
             };
+            ChartSelectionBehavior selection = new ChartSelectionBehavior()
+            {
+                SelectionMode = Syncfusion.UI.Xaml.Charts.SelectionMode.MouseClick,
+                EnableSeriesSelection = true
+            };
             this.Behaviors.Add(zooming);
+            this.Behaviors.Add(selection);
             this.PrimaryAxis.ShowTrackBallInfo = true;
+            this.Legend = new ChartLegend();
         }
+
     }
 }

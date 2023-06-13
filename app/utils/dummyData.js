@@ -1,3 +1,31 @@
+import * as math from 'mathjs';
+import spectrum from '@app/utils/syntheticSpectrum';
+import {wavelength2ramanshift} from '@app/helpers/deviceRequests';
+
+const baselineALS = (y, lambda, p, niter=100) => {
+  //const L = y.length
+  //const D = math.add(math.SparseMatrix.diagonal([L, L-2], 1, 0), math.SparseMatrix.diagonal([L, L-2], -2, -1), math.SparseMatrix.diagonal([L, L-2], 1, -2))
+  //const lambdaDDt = math.multiply(lambda, math.multiply(D, math.transpose(D)))
+  //let w = math.ones(L)
+  //let z = math.ones(L)
+  //for(let i = 0; i < niter; i++) {
+    //let W = math.SparseMatrix.diagonal([L, L], w, 0)
+    //let Z = math.add(W, lambdaDDt)
+    //z = math.lusolve(Z, math.dotMultiply(w, y)).valueOf().flat()
+    //w = math.add(math.multiply(p, math.larger(y, z)), math.multiply(1 - p, math.smaller(y, z)))
+  //}
+
+
+  //return z.map((v,i) => [i,v]);
+  return y.map((v,i) => [i,v]);
+};
+
+export const synthetic = baselineALS(spectrum.map((v,i) => v[1]), 1e7, 0.05);
+
+const paso = (598 - 528) / 3694
+export const linearSpectrum = Array.from({ length: 3694 }, (_, i) => i+1).map((v,i) => [wavelength2ramanshift(528 + i * paso, 520),i/3694]);
+console.log(linearSpectrum)
+
 export const siliconSpectrumPoints = normalizeY([
   [86.70313, 10.91968],
   [88.63159, 10.03891],

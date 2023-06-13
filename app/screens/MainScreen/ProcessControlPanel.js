@@ -12,18 +12,15 @@ import TakeSampleButton from '@app/screens/MainScreen/TakeSampleButton';
 import NormalizationProcess from '@app/screens/MainScreen/NormalizationProcess';
 import FindPeaksProcess from '@app/screens/MainScreen/FindPeaksProcess';
 
-const ProcessControlPanel = ({onTakeSamplePress}) => {
+const ProcessControlPanel = ({onTakeSamplePress, takeSampleEnabled, laserPower, onLaserPowerChange, exposureTime, onExposureTimeChange, onSpectrumReadingsChange, spectrumReadings}) => {
   const colors = getColors(useColorScheme() === 'dark');
   const styles = dynamicStyles(colors);
   const [controlTabActive, setControlTabActive] = useState(true);
-  const [laserPower, setLaserPower] = useState(20);
-  const [exposureTime, setExposureTime] = useState(100);
-  const [spectrumReadings, setSpectrumReadings] = useState(5);
   const [readingTime, setReadingTime] = useState(0.6);
 
   const handleTimeChangingControl = (exposure, readings) => {
-    setExposureTime(exposure);
-    setSpectrumReadings(readings);
+    onExposureTimeChange(exposure);
+    onSpectrumReadingsChange(readings);
     setReadingTime((exposure * readings) / 1000);
   };
 
@@ -35,7 +32,7 @@ const ProcessControlPanel = ({onTakeSamplePress}) => {
   const ControlPanel = () => {
     return (
       <View style={styles.panel}>
-        <LaserPowerControl power={laserPower} onPowerSelect={setLaserPower} />
+        <LaserPowerControl power={laserPower} onPowerSelect={onLaserPowerChange} />
         <View style={styles.separator} />
         <ExposureTimeControl
           exposureTime={exposureTime}
@@ -51,6 +48,7 @@ const ProcessControlPanel = ({onTakeSamplePress}) => {
         <ReadingTimeDisplay readingTime={readingTime} />
         <View style={styles.separator} />
         <TakeSampleButton
+          disabled={!takeSampleEnabled}
           onTakeSamplePress={() =>
             onTakeSamplePress(laserPower, exposureTime, spectrumReadings)
           }

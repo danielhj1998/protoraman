@@ -12,6 +12,7 @@ using Windows.Devices.SerialCommunication;
 using Windows.Foundation;
 using System.Text;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.UI.Popups;
 
 namespace protoraman
 {
@@ -19,22 +20,13 @@ namespace protoraman
     class SerialPort
     {
         #region Atributtes
-        private const string AQS = "System.ItemNameDisplay:=\"FT232R USB UART\" AND " +
-        //private const string AQS = "System.ItemNameDisplay:=\"STM32 STLink\" AND " +
+        //private const string AQS = "System.ItemNameDisplay:=\"FT232R USB UART\" AND " +
+        private const string AQS = "System.ItemNameDisplay:=\"STM32 STLink\" AND " +
             "System.Devices.InterfaceClassGuid:=\"{86e0d1e0-8089-11d0-9ce4-08003e301f73}\"" +
             "System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
         private bool connecting = false;
         private SerialDevice device = null;
         private DeviceWatcher watcher;
-        //[ReactConstant]
-        //public JSValueObject watcherStatus = new JSValueObject() {
-        //                { "Aborted", (int)DeviceWatcherStatus.Aborted },
-        //                { "Created", (int)DeviceWatcherStatus.Created },
-        //                { "Completed", (int)DeviceWatcherStatus.EnumerationCompleted },
-        //                { "Started", (int)DeviceWatcherStatus.Started },
-        //                { "Stopped", (int)DeviceWatcherStatus.Stopped },
-        //                { "Stopping", (int)DeviceWatcherStatus.Stopping }
-        //            };
         #endregion
 
         #region Methods
@@ -184,7 +176,21 @@ namespace protoraman
             return await this.DeviceWrite(bytesToWrite);
         }
 
-        [ReactMethod("deviceWriteUint16")]
+        [ReactMethod("deviceWriteUInt16Array")]
+        public async Task<bool> DeviceWriteUInt16Array(IList<UInt16> numbers)
+        {
+            var bytesToWrite = new List<byte>();
+            foreach (UInt16 n in numbers)
+            {
+                foreach (var b in BitConverter.GetBytes(n))
+                {
+                    bytesToWrite.Add(b);
+                }
+            }
+            return await this.DeviceWrite(bytesToWrite.ToArray());
+        }
+
+        [ReactMethod("deviceWriteUInt16")]
         public async Task<bool> DeviceWriteUInt16(UInt16 number)
         {
             return await this.DeviceWrite(BitConverter.GetBytes(number));
@@ -195,7 +201,12 @@ namespace protoraman
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             try
             {
-                await this.device.OutputStream.WriteAsync(bytesToWrite.AsBuffer());
+                //await this.device.OutputStream.WriteAsync(bytesToWrite.AsBuffer());
+                DataWriter writer = new DataWriter(this.device.OutputStream);
+                writer.WriteBytes(bytesToWrite);
+                await writer.StoreAsync();
+                writer.DetachStream();
+                writer.Dispose();
                 tcs.SetResult(true);
             }
             catch (Exception exception)

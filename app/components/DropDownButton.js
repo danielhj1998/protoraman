@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, useColorScheme} from 'react-native';
+import {View, Text, ScrollView, StyleSheet, useColorScheme} from 'react-native';
 import {getColors} from '@app/utils/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import fonts from '@app/utils/fonts';
@@ -34,7 +34,9 @@ const CustomContextMenu = ({style, layouts, children}) => {
 
   return (
     <View style={[style, position, {width: width}]}>
-      {children}
+      <ScrollView showsVerticalScrollIndicator={false} >
+        {children}
+      </ScrollView>
     </View>
   );
 }

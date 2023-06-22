@@ -8,7 +8,7 @@
 
   <Identity
     Name="31594DanielHernandezJimen.ProtoRaman"
-    <!--Publisher="CN=8AB9411B-13C9-4891-BB0B-DEA8BC531CBA"-->
+    Publisher="CN=8AB9411B-13C9-4891-BB0B-DEA8BC531CBA"
     Version="1.0.25.0" />
 
   <mp:PhoneIdentity PhoneProductId="240eae89-32b7-4927-bb02-a7ffe0bdef14" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

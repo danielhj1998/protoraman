@@ -5,17 +5,17 @@
   <Import Project="$(SolutionDir)\ExperimentalFeatures.props" Condition="Exists('$(SolutionDir)\ExperimentalFeatures.props')" />
   <PropertyGroup Label="ReactNativeWindowsProps">
     <ReactNativeWindowsDir Condition="'$(ReactNativeWindowsDir)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), 'node_modules\react-native-windows\package.json'))\node_modules\react-native-windows\</ReactNativeWindowsDir>
-    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
-    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>4FEB003B680728B0D6C7B55EA234F03C54368494</PackageCertificateThumbprint>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxPackageDir>C:\Users\Cori\protoraman\windows\protoraman\AppPackages\LOB\</AppxPackageDir>
+    <!--<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>-->
+    <!--<GenerateAppInstallerFile>False</GenerateAppInstallerFile>-->
+    <!--<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>-->
+    <!--<GenerateTestArtifacts>True</GenerateTestArtifacts>-->
+    <!--<AppxBundle>Always</AppxBundle>-->
+    <!--<AppxBundlePlatforms>x64</AppxBundlePlatforms>-->
+    <!--<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>-->
+    <!--<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>-->
+    <!--<PackageCertificateThumbprint>4FEB003B680728B0D6C7B55EA234F03C54368494</PackageCertificateThumbprint>-->
+    <!--<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>-->
+    <!--<AppxPackageDir>C:\Users\Cori\protoraman\windows\protoraman\AppPackages\LOB\</AppxPackageDir>-->
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

@@ -6,7 +6,7 @@ import { SvgXml } from 'react-native-svg';
 import laserSvg from '@assets/images/time-and-weather-24-filled.svg';
 import DropDownButton from '@app/components/DropDownButton';
 
-export const exposureTimeOptions = ["32 µs", "40 µs", "64 µs", "80 µs", "128 µs", "160 µs", "200 µs", "256 µs", "320 µs", "400 µs", "640 µs", "800 µs", "1000 µs", "1280 µs", "1600 µs", "2000 µs", "3200 µs", "4000 µs", "5000 µs", "6400 µs", "8000 µs", "10 ms", "16 ms", "20 ms", "32 ms", "40 ms", "80 ms", "160 ms"];
+export const exposureTimeOptions = ["4 µs", "5 µs", "8 µs", "10 µs", "16 µs", "20 µs", "25 µs", "32 µs", "40 µs", "50 µs", "80 µs", "100 µs", "125 µs", "160 µs", "200 µs", "250 µs", "400 µs", "500 µs", "625 µs", "800 µs", "1000 µs", "1250 µs", "2000 µs", "2500 µs", "4000 µs", "5000 µs", "10000 µs", "20000 µs"];
 
 const ExposureTimeControl = ({exposureTime, onExposureTimeChange}) => {
   const colors = getColors(useColorScheme() === "dark");

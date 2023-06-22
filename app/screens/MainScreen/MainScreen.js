@@ -125,10 +125,12 @@ const MainScreen = () => {
             <Icon name="help-circle" color={colors.gray} size={40} />
           </TouchableOpacity>
           <HelpModal isVisible={isHelpPopupVisible} onDismiss={() => setIsHelpPopupVisible(false)}/>
-          <TouchableOpacity onPress={() => setIsSettingsPopupVisible(true)}>
-            <SvgXml style={styles.svg} width="43" height="43" xml={svgImage} />
-          </TouchableOpacity>
-          <SettingsModal isVisible={isSettingsPopupVisible} onDismiss={() => setIsSettingsPopupVisible(false)}/>
+          {
+          //<TouchableOpacity onPress={() => setIsSettingsPopupVisible(true)}>
+            //<SvgXml style={styles.svg} width="43" height="43" xml={svgImage} />
+          //</TouchableOpacity>
+          //<SettingsModal isVisible={isSettingsPopupVisible} onDismiss={() => setIsSettingsPopupVisible(false)}/>
+          }
         </View>
       </View>
       <View style={styles.spectrumPanel}>

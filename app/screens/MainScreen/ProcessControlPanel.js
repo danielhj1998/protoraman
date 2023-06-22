@@ -69,27 +69,30 @@ const ProcessControlPanel = ({onTakeSamplePress, takeSampleEnabled, laserPower, 
 
   return (
     <View style={styles.container}>
-      <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.tabs,
-            {borderBottomEndRadius: 10, borderColor: controlTabBorderColor, bottom: 2},
-          ]}
-          onPress={() => setControlTabActive(true)}>
-          <Text style={[styles.title, {color: controlTabColor}]}>Muestreo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.tabs,
-            {borderTopEndRadius: 10, borderColor: processingTabBorderColor, top: 2},
-          ]}
-          onPress={() => setControlTabActive(false)}>
-          <Text style={[styles.title, {color: processingTabColor}]}>
-            Procesamiento
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {controlTabActive ? <ControlPanel /> : <ProcessingPanel />}
+      {
+      //<View style={styles.tabsContainer}>
+        //<TouchableOpacity
+          //style={[
+            //styles.tabs,
+            //{borderBottomEndRadius: 10, borderColor: controlTabBorderColor, bottom: 2},
+          //]}
+          //onPress={() => setControlTabActive(true)}>
+          //<Text style={[styles.title, {color: controlTabColor}]}>Muestreo</Text>
+        //</TouchableOpacity>
+        //<TouchableOpacity
+          //style={[
+            //styles.tabs,
+            //{borderTopEndRadius: 10, borderColor: processingTabBorderColor, top: 2},
+          //]}
+          //onPress={() => setControlTabActive(false)}>
+          //<Text style={[styles.title, {color: processingTabColor}]}>
+            //Procesamiento
+          //</Text>
+        //</TouchableOpacity>
+      //</View>
+      //{controlTabActive ? <ControlPanel /> : <ProcessingPanel />}
+      }
+      <ControlPanel />
     </View>
   );
 };

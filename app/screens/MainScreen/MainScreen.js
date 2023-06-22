@@ -17,6 +17,9 @@ import HelpModal from '@app/screens/MainScreen/HelpModal';
 import { NativeEventEmitter } from 'react-native';
 import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints, synthetic, linearSpectrum} from '@app/utils/dummyData';
+import myspectrum from '@app/utils/myspectrum';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
@@ -25,14 +28,14 @@ const MainScreen = () => {
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
   const [processState, setProcessState] = useState(States.DEVICE_READY);
-  const [data, setData] = useState([{data: siliconSpectrumPoints, color: defaultSpectrumSettings(colors).spectrumColor}]);
+  const [data, setData] = useState([{data: siliconSpectrumPoints, color: defaultSpectrumSettings(colors).spectrumColor}, {data: siliconSpectrumPoints, color: colors.green}]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   const [isAboutPopupVisible, setIsAboutPopupVisible] = useState(false);
   const [isHelpPopupVisible, setIsHelpPopupVisible] = useState(false);
   const [isSettingsPopupVisible, setIsSettingsPopupVisible] = useState(false);
   const [takeSampleEnabled, setTakeSampleEnabled] = useState(true);
   const [laserPower, setLaserPower] = useState(20);
-  const [exposureTime, setExposureTime] = useState(100);
+  const [exposureTime, setExposureTime] = useState(200);
   const [spectrumReadings, setSpectrumReadings] = useState(1);
   const chartRef = useRef();
   let eventSubscriptions = [];

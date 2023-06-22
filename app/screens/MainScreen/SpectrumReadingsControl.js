@@ -10,11 +10,17 @@ const SpectrumReadingsControl = ({number, onNumberChange}) => {
   const colors = getColors(useColorScheme() === "dark");
   const styles = dynamicStyles(colors);
 
+  const handleOnNumberChange = (n) => {
+    if (n > 0) {
+      onNumberChange(n)
+    }
+  };
+
   return (
     <View style={styles.controlOp}>
       <Text style={styles.body}>Lecturas por espectro</Text>
       <SvgXml style={styles.icon} width="30" height="30" xml={laserSvg} />
-      <NumberInput value={number} onChange={onNumberChange} hasPlusMinusButtons />
+      <NumberInput value={number} onChange={handleOnNumberChange} hasPlusMinusButtons />
     </View>
   );
 };

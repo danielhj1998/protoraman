@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, useColorScheme} from 'react-native';
+import {View, ScrollView, Text, StyleSheet, useColorScheme} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
@@ -31,6 +31,7 @@ const SpectrumSettingsPanel = ({
 
   return (
     <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.horizontalOption}>
         <View style={styles.titleContainer}>
           <Text style={styles.body}>Mantener</Text>
@@ -90,6 +91,7 @@ const SpectrumSettingsPanel = ({
         formatOptions={['CSV', 'TXT']}
         onSavePress={onDataSavePress}
       />
+    </ScrollView>
     </View>
   );
 };

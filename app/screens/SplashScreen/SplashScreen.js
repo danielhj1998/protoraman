@@ -6,6 +6,8 @@ import image from '@assets/images/imago.png';
 import SerialPort from '@app/modules/NativeSerialPort';
 import {protoRamanDeviceIdentify} from '@app/helpers/deviceRequests';
 import { NativeEventEmitter } from 'react-native';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 
@@ -43,7 +45,9 @@ const SplashScreen = ({navigation}) => {
       eventSubscriptions.push(SerialPortEmitter.addListener('onConnectionFailed', onConnectionFailed));
     };
 
-    setTimeout(() => setListeners(), 2000);
+    //setTimeout(() => setListeners(), 2000);
+    SerialPort.createWatcher();
+    navigation.navigate('Main');
   },[]);
 
   return (

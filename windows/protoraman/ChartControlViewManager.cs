@@ -49,6 +49,9 @@ namespace protoraman
                             fls.Interior = new SolidColorBrush(color);
                         }
 
+                        Color selectionColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), "#3399ff");
+                        fls.SeriesSelectionBrush = new SolidColorBrush(selectionColor);
+
                         view.Series.Add(fls);
                     }
                 }

@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="a5e4c433-54b4-4375-897d-fcd10d4b0ce9"
-    Publisher="CN=Cori"
-    Version="1.0.0.0" />
+    Name="31594DanielHernandezJimen.ProtoRaman"
+    Publisher="CN=8AB9411B-13C9-4891-BB0B-DEA8BC531CBA"
+    Version="1.0.25.0" />
 
-  <mp:PhoneIdentity PhoneProductId="a5e4c433-54b4-4375-897d-fcd10d4b0ce9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="240eae89-32b7-4927-bb02-a7ffe0bdef14" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>protoraman</DisplayName>
-    <PublisherDisplayName>Cori</PublisherDisplayName>
+    <DisplayName>ProtoRaman</DisplayName>
+    <PublisherDisplayName>Daniel Hernandez Jimenez</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -33,13 +33,16 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="protoraman.App">
       <uap:VisualElements
-        DisplayName="protoraman"
+        DisplayName="ProtoRaman"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="protoraman"
+        Description="This is a Windows app to use with the Raman spectrometer built by me and my friends for the Final Project at our university (UPIITA - IPN)"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="landscapeFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>

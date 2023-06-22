@@ -24,7 +24,6 @@ export const synthetic = baselineALS(spectrum.map((v,i) => v[1]), 1e7, 0.05);
 
 const paso = (598 - 528) / 3694
 export const linearSpectrum = Array.from({ length: 3694 }, (_, i) => i+1).map((v,i) => [wavelength2ramanshift(528 + i * paso, 520),i/3694]);
-console.log(linearSpectrum)
 
 export const siliconSpectrumPoints = normalizeY([
   [86.70313, 10.91968],

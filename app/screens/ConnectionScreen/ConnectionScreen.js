@@ -8,6 +8,8 @@ import FadingView from '@app/components/FadingView';
 import SerialPort from '@app/modules/NativeSerialPort';
 import {protoRamanDeviceIdentify} from '@app/helpers/deviceRequests';
 import { NativeEventEmitter } from 'react-native';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const SerialPortEmitter = new NativeEventEmitter(SerialPort);
 

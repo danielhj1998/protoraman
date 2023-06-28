@@ -1,8 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {View, Modal, StyleSheet, Text, useColorScheme, TouchableOpacity, Button} from 'react-native';
+import {View, StyleSheet, useColorScheme, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SvgXml} from 'react-native-svg';
-import svgImage from '@assets/images/settings-48-filled.svg';
 import {getColors} from '@app/utils/colors';
 import fonts from '@app/utils/fonts';
 import ProcessControlPanel from '@app/screens/MainScreen/ProcessControlPanel';
@@ -17,7 +15,7 @@ import HelpModal from '@app/screens/MainScreen/HelpModal';
 import { NativeEventEmitter } from 'react-native';
 import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints, synthetic, linearSpectrum} from '@app/utils/dummyData';
-import myspectrum from '@app/utils/myspectrum';
+import {w1, w2} from '@app/utils/myspectrum';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -28,11 +26,11 @@ const MainScreen = () => {
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
   const [processState, setProcessState] = useState(States.DEVICE_READY);
-  const [data, setData] = useState([{data: siliconSpectrumPoints, color: defaultSpectrumSettings(colors).spectrumColor}, {data: siliconSpectrumPoints, color: colors.green}]);
+  const [data, setData] = useState([]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   const [isAboutPopupVisible, setIsAboutPopupVisible] = useState(false);
   const [isHelpPopupVisible, setIsHelpPopupVisible] = useState(false);
-  const [isSettingsPopupVisible, setIsSettingsPopupVisible] = useState(false);
+  //const [isSettingsPopupVisible, setIsSettingsPopupVisible] = useState(false);
   const [takeSampleEnabled, setTakeSampleEnabled] = useState(true);
   const [laserPower, setLaserPower] = useState(20);
   const [exposureTime, setExposureTime] = useState(200);
@@ -107,8 +105,8 @@ const MainScreen = () => {
       );
     };
 
-    startWatcher(SerialPort);
-    addListeners();
+    //startWatcher(SerialPort);
+    //addListeners();
   }, []);
 
   return (

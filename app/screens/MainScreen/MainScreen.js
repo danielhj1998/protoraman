@@ -105,8 +105,8 @@ const MainScreen = () => {
       );
     };
 
-    //startWatcher(SerialPort);
-    //addListeners();
+    startWatcher(SerialPort);
+    addListeners();
   }, []);
 
   return (

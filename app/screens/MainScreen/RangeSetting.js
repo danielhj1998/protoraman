@@ -67,7 +67,7 @@ const RangeSetting = ({range, onChangeRange, rangeSelectionMode, onChangeRangeSe
           <NumberInput
             style={styles.leftMargin}
             value={range.y[0]}
-            onChange={v => onChangeRange({...range, y: [v, range.y[0]]})}
+            onChange={v => onChangeRange({...range, y: [v, range.y[1]]})}
           />
           <Text style={[styles.body, styles.leftMargin]}>a</Text>
           <NumberInput

@@ -21,7 +21,7 @@ const ProcessControlPanel = ({onTakeSamplePress, takeSampleEnabled, laserPower, 
   const handleTimeChangingControl = (exposure, readings) => {
     onExposureTimeChange(exposure);
     onSpectrumReadingsChange(readings);
-    setReadingTime((exposure * readings) / 1000);
+    setReadingTime(2 * readings);
   };
 
   const controlTabColor = controlTabActive ? colors.orange : colors.gray;

@@ -266,6 +266,7 @@ namespace protoraman
         {
             NumericalAxis xAxis = (NumericalAxis)view.PrimaryAxis;
             NumericalAxis yAxis = (NumericalAxis)view.SecondaryAxis;
+            this.LastSmallTicksPerIntervalValue = number;
             xAxis.SmallTicksPerInterval = number;
             yAxis.SmallTicksPerInterval = number;
         }

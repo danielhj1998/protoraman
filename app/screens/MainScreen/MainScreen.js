@@ -26,7 +26,7 @@ const MainScreen = () => {
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
   const [processState, setProcessState] = useState(States.DEVICE_READY);
-  const [data, setData] = useState([{data: s1, color: spectrumSettings.spectrumColor}]);
+  const [data, setData] = useState([{data: [], color: spectrumSettings.spectrumColor}]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   const [isAboutPopupVisible, setIsAboutPopupVisible] = useState(false);
   const [isHelpPopupVisible, setIsHelpPopupVisible] = useState(false);

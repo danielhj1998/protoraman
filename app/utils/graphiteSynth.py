@@ -8,6 +8,13 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 from scipy.signal import savgol_filter, general_gaussian
 
+def Poisson(x, lam):
+    y = x
+    for i, xi in enumerate(y):
+        y[i] = (lam ** xi * np.exp(-lam)) / np.math.factorial(xi)
+        
+    return y
+
 def Gauss(x, mu, sigma, A = 1):
     # This def returns the Gaussian function of x
     # x is an array
@@ -25,7 +32,11 @@ x_range =  np.linspace(300, 2500, 3694)
 # Let's create three different components
 
 # Component A
-mu_a2 = 1058
+mu_a1 = 1250 + 40
+sigma_a1 = 70
+intensity_a1 = 10
+
+mu_a2 = 1050
 sigma_a2 = 50
 intensity_a2 = 18
 
@@ -33,18 +44,20 @@ mu_a3 = 1200
 sigma_a3 = 40
 intensity_a3 = 26.3
 
-gauss_a =  Gauss(x_range, mu_a2, sigma_a2, intensity_a2) + Gauss(x_range, mu_a3, sigma_a3, intensity_a3)
+# gauss_a = Poisson(x_range, 4) + Gauss(x_range, mu_a3, sigma_a3, intensity_a3)
+gauss_a = Gauss(x_range, mu_a3 + 75, sigma_a3, intensity_a3/1.2) + Gauss(x_range, mu_a2, sigma_a2, intensity_a2) + Gauss(x_range, mu_a3, sigma_a3, intensity_a3)
+# gauss_a = Gauss(x_range, mu_a1, sigma_a1, intensity_a1) + Gauss(x_range, mu_a2, sigma_a2, intensity_a2) + Gauss(x_range, mu_a3, sigma_a3, intensity_a3)
 
 # Component normalization
 component_a = gauss_a
 
 # How do they look?
-# plt.plot(x_range, component_a, label = 'Component 1')
-# plt.title('Known components in our mixture', fontsize = 15)
-# plt.xlabel('Wavelength', fontsize = 15)
-# plt.ylabel('Normalized intensity', fontsize = 15)
-# plt.legend()
-# plt.show()
+plt.plot(x_range, component_a, label = 'Component 1')
+plt.title('Known components in our mixture', fontsize = 15)
+plt.xlabel('Wavelength', fontsize = 15)
+plt.ylabel('Normalized intensity', fontsize = 15)
+plt.legend()
+plt.show()
 
 # Let's build the spectrum to be studied: The mixture spectrum
 mix_spectrum = component_a

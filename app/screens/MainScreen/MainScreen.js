@@ -15,7 +15,7 @@ import HelpModal from '@app/screens/MainScreen/HelpModal';
 import { NativeEventEmitter } from 'react-native';
 import {protoRamanDeviceIdentify, startWatcher, States, getSpectrum} from '@app/helpers/deviceRequests';
 import {siliconSpectrumPoints, synthetic, linearSpectrum} from '@app/utils/dummyData';
-import {w1, w2} from '@app/utils/myspectrum';
+import {s1} from '@app/utils/myspectrum';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -26,7 +26,7 @@ const MainScreen = () => {
   const styles = dynamicStyles(colors);
   const [spectrumSettings, setSpectrumSettings] = useState(defaultSpectrumSettings(colors));
   const [processState, setProcessState] = useState(States.DEVICE_READY);
-  const [data, setData] = useState([{data: [], color: spectrumSettings.spectrumColor}]);
+  const [data, setData] = useState([{data: s1, color: spectrumSettings.spectrumColor}]);
   const [rangeSelectionMode, setRangeSelectionMode] = useState("none");
   const [isAboutPopupVisible, setIsAboutPopupVisible] = useState(false);
   const [isHelpPopupVisible, setIsHelpPopupVisible] = useState(false);

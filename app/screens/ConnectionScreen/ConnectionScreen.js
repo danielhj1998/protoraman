@@ -81,7 +81,7 @@ const ConnectionScreen = ({navigation}) => {
         <Image source={disconnectedImage} style={styles.image} resizeMode="contain"/>
       </View>
       <View style={styles.fragment}>
-        <Text style={styles.body}>Asegúrese que el dispositivo esté encendido y la barra de estado parpadee</Text>
+        <Text style={styles.body}>Asegúrese que el dispositivo esté encendido</Text>
         <View style={styles.powerImage}>
           <View style={styles.powerbutton}>
             <Icon name="power" size={50} color={colors.gray} />
